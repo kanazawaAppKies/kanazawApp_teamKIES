@@ -14,11 +14,11 @@ public class ArView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		Paint paint = new Paint();
-		//�A���`�G�C���A�X������L����
-		//�A���`�G�C���A�X�����@= �Ȑ���΂߂̃M�U�M�U�����Ȃ����邱��
+		//アンチエイリアス処理を有効化
+		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
 		paint.setAntiAlias(true);
 		
-		//�`��J�n �����o����悤�ɂ��邽�ߍ����for���������Ń��[�v�\��@�Љ��ꏊ�́@ArrayList���H
+		//描画開始 複数出きるようにするため今後はfor文か何かでループ予定　紹介する場所は　ArrayListか？
 		
 	}
 	
