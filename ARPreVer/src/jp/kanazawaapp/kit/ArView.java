@@ -22,7 +22,5 @@ public class ArView extends View {
 		
 	}
 	
-	private void drawObject(Canvas canvas, Paint paint) {
-		
-	}
+	
 }
