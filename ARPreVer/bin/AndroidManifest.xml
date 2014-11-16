@@ -3,10 +3,14 @@
     package="jp.kanazawaapp.kit"
     android:versionCode="1"
     android:versionName="1.0" >
-
+  
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.Camera"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    
+    
 
     <application
         android:allowBackup="true"
@@ -22,6 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <uses-library android:name="com.google.android.map"/>
+        <uses-library android:name="jp.co.sharp.android.hardware"/>
     </application>
 
 </manifest>
