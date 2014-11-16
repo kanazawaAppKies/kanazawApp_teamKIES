@@ -12,18 +12,18 @@ public class CameraView extends SurfaceView  implements SurfaceHolder.Callback{
 
 	public CameraView(Context context) {
 		super(context);
-		 //ƒT[ƒtƒFƒCƒXƒzƒ‹ƒ_[‚Ìæ“¾‚ÆƒR[ƒ‹ƒoƒbƒN’Ê’mæ‚Ìw’è
+		 //ã‚µãƒ¼ãƒ•ã‚§ã‚¤ã‚¹ãƒ›ãƒ«ãƒ€ãƒ¼ã®å–å¾—ã¨ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é€šçŸ¥å…ˆã®æŒ‡å®š
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-//        SDK3.1ˆÈ~•s—v‚½‚ßƒRƒƒ“ƒgƒAƒEƒg
-//     	  // SurfaceView‚Ìí•Ê‚ğƒvƒbƒVƒ…ƒoƒbƒtƒ@[‚É•ÏX‚µ‚Ü‚· 
-//        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+//      SDK3.1ä»¥é™ä¸è¦ãŸã‚ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
+//   	  // SurfaceViewã®ç¨®åˆ¥ã‚’ãƒ—ãƒƒã‚·ãƒ¥ãƒãƒƒãƒ•ã‚¡ãƒ¼ã«å¤‰æ›´ã—ã¾ã™ 
+//      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
 
-	//ƒJƒƒ‰‹N“®
+	//ã‚«ãƒ¡ãƒ©èµ·å‹•æ™‚
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		//ƒJƒƒ‰‚ªŠJ‚¯‚È‚¢‚È‚ç‰½‚à‚µ‚È‚¢
+		//ã‚«ãƒ¡ãƒ©ãŒé–‹ã‘ãªã„ãªã‚‰ä½•ã‚‚ã—ãªã„
 		 try {
 	            camera = Camera.open();
 	            camera.setPreviewDisplay(surfaceHolder);
@@ -32,15 +32,15 @@ public class CameraView extends SurfaceView  implements SurfaceHolder.Callback{
 		
 	}
 
-	//•ÏX
+	//å¤‰æ›´æ™‚
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
-		// ƒvƒŒƒrƒ…[‚ÌŠJn
+		// ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ã®é–‹å§‹
         camera.startPreview();
 		
 	}
 
-	//I—¹
+	//çµ‚äº†æ™‚
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		camera.setPreviewCallback(null);
