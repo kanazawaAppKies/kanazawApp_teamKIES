@@ -7,28 +7,28 @@ import android.view.SurfaceView;
 
 public class CameraView extends SurfaceView  implements SurfaceHolder.Callback{
 
-	 private SurfaceHolder surfaceHolder;
+	 private SurfaceHolder holder;
 	 private Camera camera;
 
 	public CameraView(Context context) {
 		super(context);
 		 //サーフェイスホルダーの取得とコールバック通知先の指定
-        surfaceHolder = getHolder();
-        surfaceHolder.addCallback(this);
+        holder = getHolder();
+        holder.addCallback(this);
 //      SDK3.1以降不要ためコメントアウト
 //   	  // SurfaceViewの種別をプッシュバッファーに変更します 
-//      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+//        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
 
 	//カメラ起動時
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		//カメラが開けないなら何もしない
-		 try {
-	            camera = Camera.open();
-	            camera.setPreviewDisplay(surfaceHolder);
-	        } catch (Exception e) {
-	        }
+		try {
+            camera = Camera.open();
+            camera.setPreviewDisplay(holder);
+        } catch (Exception e) {
+        }
 		
 	}
 

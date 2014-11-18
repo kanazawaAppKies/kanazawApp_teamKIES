@@ -7,11 +7,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.View;
 
+import com.google.android.maps.GeoPoint;
+
 public class ArView extends View {
 
-	//の描画位置を指定する 現在は中央
-    private final float POS_COMPASSX = getWidth() / 2	;
-    private final float POS_COMPASSY = getHeight()	/ 2;
+	//描画位置を指定する 現在は中央
+    private final float POS_COMPASSX = 30	;
+    private final float POS_COMPASSY = 30;
+
 
     // 向きを保持する変数 (方角を指定する)
     float direction;
@@ -45,7 +48,7 @@ public class ArView extends View {
 	
 	//センサー値の取得と再描画
     public void drawScreen(float preDirection) {
-        // センサーの値から端末の向きを計算する
+    	// センサーの値から端末の向きを計算する
         direction = (preDirection + 450) % 360;
         // onDrawを呼び出して再描画
         invalidate();

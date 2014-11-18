@@ -11,10 +11,11 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class ARPreviewActivity extends Activity implements SensorEventListener {
+public class ARPreviewActivity extends Activity implements SensorEventListener{
 
 	private ArView arView;
 	private SensorManager sensorManager;
@@ -27,12 +28,14 @@ public class ARPreviewActivity extends Activity implements SensorEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_arpreview);
 		
 		// フルスクリーン指定
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //タイトルバーの表示を解除
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+		
         
      // ARViewの取得
         arView = new ArView(this);
@@ -43,6 +46,11 @@ public class ARPreviewActivity extends Activity implements SensorEventListener {
         listMag = sensorManager.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
         //加速度センサー
         listAcc = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+        
+        //Viewの重ね合わせ
+        setContentView(new CameraView(this));
+        addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT));
 
 	}
 
@@ -90,10 +98,12 @@ public class ARPreviewActivity extends Activity implements SensorEventListener {
 
             SensorManager.getOrientation(R, actual_orientation);
             
+            
             // 求まった方位角をラジアンから度に変換する
             float direction = (float) Math.toDegrees(actual_orientation[0]);
+
             
-            //描画をする
+          //描画をする
             arView.drawScreen(direction);
         }
     }
@@ -102,14 +112,14 @@ public class ARPreviewActivity extends Activity implements SensorEventListener {
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO 自動生成されたメソッド・スタブ
-		
 	}
 	
 	//activity実行直前
 	@Override
 	protected void onResume() {
 		super.onResume();
+        		
+        		
 		//センサー処理の登録
 		
 		/* sensorManager
@@ -130,4 +140,9 @@ public class ARPreviewActivity extends Activity implements SensorEventListener {
 		sensorManager.unregisterListener(this);
 
 	}
+
+	
 }
+
+
+
