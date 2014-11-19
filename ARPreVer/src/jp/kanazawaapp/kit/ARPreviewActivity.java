@@ -17,7 +17,9 @@ import android.view.WindowManager;
 
 public class ARPreviewActivity extends Activity implements SensorEventListener{
 
+	//ARview
 	private ArView arView;
+	//センサー
 	private SensorManager sensorManager;
 	private List<Sensor> listMag;
 	private List<Sensor> listAcc;

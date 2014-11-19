@@ -1,9 +1,12 @@
 package jp.kanazawaapp.kit;
 
+import java.util.List;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.ViewGroup;
 
 public class CameraView extends SurfaceView  implements SurfaceHolder.Callback{
 
@@ -35,6 +38,24 @@ public class CameraView extends SurfaceView  implements SurfaceHolder.Callback{
 	//変更時
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
+		//surfaceの解像度を設定
+		ViewGroup.LayoutParams layoutParams = getLayoutParams();
+		layoutParams.width = width;
+		layoutParams.height = height;
+		setLayoutParams(layoutParams);
+		
+		Camera.Parameters parameters = camera.getParameters();
+		List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
+		for (Camera.Size size : sizes) {
+            if (size.width / width == size.height / height) {
+                width = size.width;
+                height = size.height;
+                break;
+            }
+        }
+        parameters.setPreviewSize(width, height);
+        camera.setParameters(parameters);
+
 		// プレビューの開始
         camera.startPreview();
 		
