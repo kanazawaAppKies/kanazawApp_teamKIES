@@ -46,7 +46,9 @@ public class CameraView extends SurfaceView  implements SurfaceHolder.Callback{
 		
 		Camera.Parameters parameters = camera.getParameters();
 		List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
+		
 		for (Camera.Size size : sizes) {
+			//縦横比を調べる
             if (size.width / width == size.height / height) {
                 width = size.width;
                 height = size.height;
