@@ -39,65 +39,66 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	private float[] magneticValues =new float[3];
 	
 //location関係
-	private LocationManager locationManager;
-	//グーグルマップからの位置取得
-	private GeoPoint geoPoint;
-	//磁北補正用
-	private GeomagneticField geomagneticField;  
+    private LocationManager locationManager;
+    //グーグルマップからの位置取得
+    private GeoPoint geoPoint;
+    //磁北補正用
+    private GeomagneticField geomagneticField;  
 // データベースで使用する変数
-	//データベース名
-	private final static String DB_NAME = "gps_data.db";
-	//使用するテーブル
-	private final static String DB_TABLE = "gps_data";
-	//バージョン情報
-	private final static int DB_VERSION = 1;
-	//コンストラクタ
-	private SQLiteDatabase db;
-	//カーソル
+    //データベース名
+    private final static String DB_NAME = "gps_data.db";
+    //使用するテーブル
+    private final static String DB_TABLE = "gps_data";
+    //バージョン情報
+    private final static int DB_VERSION = 1;
+    //コンストラクタ
+    private SQLiteDatabase db;
+    //カーソル
 	private Cursor cursor;
+    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		// フルスクリーン指定
-		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		//タイトルバーの表示を解除
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //タイトルバーの表示を解除
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
-		// データベースの用意
-		initData();
-
-		// ARViewの取得
-		arView = new ArView(this,cursor);
-		//閉じる
-		cursor.close();
-
-
-
-		//各種センサーの用意
-		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		//地磁気センサー
-		listMag = sensorManager.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
-		//加速度センサー
-		listAcc = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-
-		//Viewの重ね合わせ
-		setContentView(new CameraView(this));
-		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-
-
+        // データベースの用意
+        initData();
+        
+     // ARViewの取得
+        arView = new ArView(this,cursor);
+        //閉じる
+        cursor.close();
+        
+        //各種センサーの用意
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        //地磁気センサー
+        listMag = sensorManager.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
+        //加速度センサー
+        listAcc = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+        
+        //Viewの重ね合わせ
+        setContentView(new CameraView(this));
+        addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT));
+        
+        
 
 	}
 	//activity実行直前
 		@Override
 		protected void onResume() {
 			super.onResume();
-			
+	        		
 			 //ロケーションマネージャの設定
-			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, this);
+	        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, this);
+	        		
 			//センサー処理の登録
 			
 			/* sensorManager
@@ -105,8 +106,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			 * 第2引数		対象となる値を
 			 *　第3引数		呼び出し頻度   (ゲームにするなら SENSOR_DELAY_GAME)
 			 * */
-			sensorManager.registerListener(this,listMag.get(0), SensorManager.SENSOR_DELAY_NORMAL);
-			sensorManager.registerListener(this,listAcc.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+	        sensorManager.registerListener(this,
+	                listMag.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+	        sensorManager.registerListener(this,
+	                listAcc.get(0), SensorManager.SENSOR_DELAY_NORMAL);
 		}
 		
 		@Override
@@ -142,32 +145,32 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		switch (event.sensor.getType()) {
-			case Sensor.TYPE_ACCELEROMETER:
-				accelerometerValues = event.values.clone();
-				break;
-			case Sensor.TYPE_MAGNETIC_FIELD:
-				magneticValues  = event.values.clone();
-				break;
-		}
+        	case Sensor.TYPE_ACCELEROMETER:
+        		accelerometerValues = event.values.clone();
+        		break;
+        	case Sensor.TYPE_MAGNETIC_FIELD:
+        		magneticValues  = event.values.clone();
+        		break;
+        }
 
 		//magneticValues		x,y,z軸の磁気密度
 		//accelerometerValues 	x,y,z軸の加速度　
-		if (magneticValues != null && accelerometerValues != null) {
-			float[] R = new float[16];
-			float[] I = new float[16];
+        if (magneticValues != null && accelerometerValues != null) {
+            float[] R = new float[16];
+            float[] I = new float[16];
 
-			SensorManager.getRotationMatrix(R, I, accelerometerValues,magneticValues);
+            SensorManager.getRotationMatrix(R, I, accelerometerValues,
+                    magneticValues);
 
-			float[] actual_orientation = new float[3];
+            float[] actual_orientation = new float[3];
 
-			SensorManager.getOrientation(R, actual_orientation);
-
-			
-			
-			// 求まった方位角をラジアンから度に変換する
+            SensorManager.getOrientation(R, actual_orientation);
+            
+            
+            // 求まった方位角をラジアンから度に変換する
             float direction = (float) Math.toDegrees(actual_orientation[0])
             		//偏差を加算
-            		+ geomagneticField.getDeclination();
+                    + geomagneticField.getDeclination();
            //ArViewに値を渡す
           //描画をする
             arView.drawScreen(direction,geoPoint);
@@ -212,27 +215,20 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
         db = helper.getWritableDatabase();
 
         cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-                "longitude","genre" }, null, null, null, null, null,null);
+                "longitude" }, null, null, null, null, null);
         // テーブルが空の時内容をセットする
         if (cursor.getCount() < 1) {
             presetTable();
             cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-                    "longitude","genre" }, null, null, null, null, null,null);
+                    "longitude" }, null, null, null, null, null);
         }
     }
 	private void presetTable() {
-		/*
-		 * ジャンルID
-		 * 1 : 観光
-		 * 2 : 飲食
-		 * 3 : 撮影
-		 */
         // テーブルの内容が空の時以下の内容をセットする
         ContentValues values = new ContentValues();
         values.put("info","金沢工業大学");
         values.put("latitude",36530349);
         values.put("longitude", 136627751);
-        values.put("genre", 1);
         db.insert(DB_TABLE, "", values);
     }
 	
@@ -251,24 +247,27 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 
 	        @Override
 	        public void onCreate(SQLiteDatabase db) {
-	        	// テーブルの作成
+	            // テーブルの作成
 	        	//実行したいSQL文を格納
-	        	String sql = "create table if not exists "
-	        			+ DB_TABLE
-	        			+ "(info text, latitude numeric, longitude numeric)";
-	        	db.execSQL(sql);
+	            String sql = "create table if not exists "
+	                    + DB_TABLE
+	                    + "(info text, latitude numeric, longitude numeric)";
+	            db.execSQL(sql);
 
 	        }
 
 	        @Override
 	        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-	        	// データベースのアップグレード	
-	        	// ここでは、テーブルを作り直しをしています
-	        	db.execSQL("drop table if exists " + DB_TABLE);
-	        	onCreate(db);
+	            // データベースのアップグレード
+	            // ここでは、テーブルを作り直しをしています
+	            db.execSQL("drop table if exists " + DB_TABLE);
+	            onCreate(db);
 	        }
 	        
-	 	}
+	    }
+	 
+
+	
 }
 
 
