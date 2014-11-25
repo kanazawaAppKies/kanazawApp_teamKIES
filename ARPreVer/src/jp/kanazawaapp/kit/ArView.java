@@ -18,25 +18,25 @@ import com.google.android.maps.GeoPoint;
 
 public class ArView extends View {
 
-	//描画位置を指定する 現在は中央
-    private final float POS_COMPASSX = 30	;
-    private final float POS_COMPASSY = 30;
+	//コンパスの描画位置を指定する
+	private final float POS_COMPASSX = 30	;
+	private final float POS_COMPASSY = 30;
 
 
-    // 向きを保持する変数 (方角を指定する)
-    float direction;
-    
-    // 現在地を保持する変数
-    int nowLocationX, nowLocationY;
-    
-    // ARテキストの情報を保持するオブジェクト
- 	private ArrayList<GPSData> gpsDataList;
+	// 向きを保持する変数 (方角を指定する)
+	float direction;
+
+	// 現在地を保持する変数
+	int nowLocationX, nowLocationY;
+
+	// ARテキストの情報を保持するオブジェクト
+	private ArrayList<GPSData> gpsDataList;
  	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	private final int ANGLE = 60;
 	// ARテキストの見える範囲を指定する(メートル表記)
 	private final float VIEW_LIMIT = 100000;
-	// ディスプレイサイズ
+	// ディスプレイサイ
 	private int displayX;
 	
 	//地球の半径
@@ -167,15 +167,15 @@ public class ArView extends View {
 	}
 	
 	//センサー値の取得と再描画
-    public void drawScreen(float preDirection,GeoPoint geoPoint) {
-    	// センサーの値から端末の向きを計算する
-        direction = (preDirection + 450) % 360;
-        if(geoPoint != null){
-            nowLocationX = geoPoint.getLatitudeE6();
-            nowLocationY = geoPoint.getLongitudeE6();
-        }
-        // onDrawを呼び出して再描画
-        invalidate();
+	public void drawScreen(float preDirection,GeoPoint geoPoint) {
+		// センサーの値から端末の向きを計算する
+		direction = (preDirection + 450) % 360;
+		if(geoPoint != null){
+			nowLocationX = geoPoint.getLatitudeE6();
+			nowLocationY = geoPoint.getLongitudeE6();
+		}
+// onDrawを呼び出して再描画
+invalidate();
     }
     
     
@@ -196,8 +196,8 @@ public class ArView extends View {
 		} while (cursor.moveToNext());
 		//なくなるまでリストに追加する
 	}
-    
-    
+
+
     //GPS情報を保持するクラス
     class GPSData {
 		public String info;	
