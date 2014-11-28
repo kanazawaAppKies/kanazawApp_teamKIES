@@ -209,12 +209,12 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		db = helper.getWritableDatabase();
 
 		cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-				"longitude","genre" }, null, null, null, null, null, null);
+				"longitude","genre" }, null, null, null, null, null,null);
 		// テーブルが空の時内容をセットする
 		if (cursor.getCount() < 1) {
 			presetTable();
 			cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-					"longitude","genre" }, null, null, null, null, null, null);
+					"longitude","genre" }, null, null, null, null, null,null);
 		}
 	}
 	private void presetTable() {
