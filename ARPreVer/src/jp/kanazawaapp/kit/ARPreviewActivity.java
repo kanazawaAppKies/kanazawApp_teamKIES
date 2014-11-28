@@ -36,7 +36,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	private List<Sensor> listAcc;
 	private float[] accelerometerValues = new float[3];
 	//x,y,z軸の磁気密度
-	private float[] magneticValues =new float[3];
+	private float[] magneticValues = new float[3];
 	
 //location関係
 	private LocationManager locationManager;
@@ -165,14 +165,14 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			
 			
 			// 求まった方位角をラジアンから度に変換する
-            float direction = (float) Math.toDegrees(actual_orientation[0])
-            		//偏差を加算
-            		+ geomagneticField.getDeclination();
-           //ArViewに値を渡す
-          //描画をする
-            arView.drawScreen(direction,geoPoint);
-        }
-    }
+			float direction = (float) Math.toDegrees(actual_orientation[0])
+					//偏差を加算
+					+ geomagneticField.getDeclination();
+			//ArViewに値を渡す
+			//描画をする
+			arView.drawScreen(direction,geoPoint);
+		}
+	}
 
 	
 	/*LocationLisner*/
@@ -181,45 +181,42 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	}
 	@Override
 	public void onLocationChanged(Location location) {
-		   geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
-	                (int) (location.getLongitude() * 1E6));
-		   
-	        geomagneticField = new GeomagneticField((float) location.getLatitude(),
-	                (float) location.getLongitude(), (float) location.getAltitude(),
-	                new Date().getTime());
-		
+		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
+				(int) (location.getLongitude() * 1E6));
+
+		geomagneticField = new GeomagneticField((float) location.getLatitude(),
+					(float) location.getLongitude(), (float) location.getAltitude(),
+					new Date().getTime());
+
 	}
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO 自動生成されたメソッド・スタブ
 		
 	}
 	@Override
 	public void onProviderEnabled(String provider) {
-		// TODO 自動生成されたメソッド・スタブ
 		
 	}
 	@Override
 	public void onProviderDisabled(String provider) {
-		// TODO 自動生成されたメソッド・スタブ
 		
 	}
 	
 	//データベース系
 	public void initData() {
-        // SQLiteOpenHelperを継承したクラスを使用してデータベースを作成します
-        SQLiteOpenHelperEx helper = new SQLiteOpenHelperEx(this);
-        db = helper.getWritableDatabase();
+		// SQLiteOpenHelperを継承したクラスを使用してデータベースを作成します
+		SQLiteOpenHelperEx helper = new SQLiteOpenHelperEx(this);
+		db = helper.getWritableDatabase();
 
-        cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-                "longitude","genre" }, null, null, null, null, null,null);
-        // テーブルが空の時内容をセットする
-        if (cursor.getCount() < 1) {
-            presetTable();
-            cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-                    "longitude","genre" }, null, null, null, null, null,null);
-        }
-    }
+		cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
+				"longitude","genre" }, null, null, null, null, null,null);
+		// テーブルが空の時内容をセットする
+		if (cursor.getCount() < 1) {
+			presetTable();
+			cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
+					"longitude","genre" }, null, null, null, null, null,null);
+		}
+	}
 	private void presetTable() {
 		/*
 		 * ジャンルID
@@ -227,49 +224,47 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		 * 2 : 飲食
 		 * 3 : 撮影
 		 */
-        // テーブルの内容が空の時以下の内容をセットする
-        ContentValues values = new ContentValues();
-        values.put("info","金沢工業大学");
-        values.put("latitude",36530349);
-        values.put("longitude", 136627751);
-        values.put("genre", 1);
-        db.insert(DB_TABLE, "", values);
-    }
+		// テーブルの内容が空の時以下の内容をセットする
+		ContentValues values = new ContentValues();
+		values.put("info","金沢工業大学");
+		values.put("latitude",36530349);
+		values.put("longitude", 136627751);
+		values.put("genre", 1);
+		db.insert(DB_TABLE, "", values);
+	}
 	
 	
 	
 	
 	
 	//データベース用のクラス
-	 public class SQLiteOpenHelperEx extends SQLiteOpenHelper {
-	        // コンストラクタ
-	        public SQLiteOpenHelperEx(Context context) {
-	        	//データベースの生成 
-	        	//2つ目の引数をnullにすることでメモリ上にデータベースが作られる
-	            super(context, DB_NAME, null, DB_VERSION);
-	        }
+	public class SQLiteOpenHelperEx extends SQLiteOpenHelper {
+		// コンストラクタ
+		public SQLiteOpenHelperEx(Context context) {
+			//データベースの生成 
+			//2つ目の引数をnullにすることでメモリ上にデータベースが作られる
+			super(context, DB_NAME, null, DB_VERSION);
+		}
 
-	        @Override
-	        public void onCreate(SQLiteDatabase db) {
-	        	// テーブルの作成
-	        	//実行したいSQL文を格納
-	        	String sql = "create table if not exists "
-	        			+ DB_TABLE
-	        			+ "(info text, latitude numeric, longitude numeric)";
-	        	db.execSQL(sql);
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			// テーブルの作成
+			//実行したいSQL文を格納
+			String sql = "create table if not exists "
+						+ DB_TABLE
+						+ "(info text, latitude numeric, longitude numeric)";
+			db.execSQL(sql);
 
-	        }
+		}
 
-	        @Override
-	        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-	        	// データベースのアップグレード	
-	        	// ここでは、テーブルを作り直しをしています
-	        	db.execSQL("drop table if exists " + DB_TABLE);
-	        	onCreate(db);
-	        }
-	        
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			// データベースのアップグレード	
+			// ここでは、テーブルを作り直しをしています
+			db.execSQL("drop table if exists " + DB_TABLE);
+			onCreate(db);
+		}
+
+		
 	 	}
 }
-
-
-

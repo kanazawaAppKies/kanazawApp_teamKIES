@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.view.Display;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.google.android.maps.GeoPoint;
 public class ArView extends View {
 
 	//コンパスの描画位置を指定する
-	private final float POS_COMPASSX = 30	;
+	private final float POS_COMPASSX = 30;
 	private final float POS_COMPASSY = 30;
 
 
@@ -36,8 +37,9 @@ public class ArView extends View {
 	private final int ANGLE = 60;
 	// ARテキストの見える範囲を指定する(メートル表記)
 	private final float VIEW_LIMIT = 100000;
-	// ディスプレイサイ
+	// ディスプレイサイズ
 	private int displayX;
+	Point size = new Point();
 	
 	//地球の半径
 	public static final double EARTH = 6378.137;
@@ -50,11 +52,11 @@ public class ArView extends View {
 		readTable(cursor);
 		
 		// 画面サイズの取得
-				Display disp = ((WindowManager) context
-						.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-				//getSizeに変更予定
-				displayX = disp.getWidth();
+		Display disp = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		disp.getSize(size);
+		displayX = (int)size.x;
 	}
+
 
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -74,13 +76,15 @@ public class ArView extends View {
 					int y = data.latitude;
 					int x = data.longitude;
 
-					// ARテキストとの距離を求め、ラジアンに変換する
-					double dx = Math.toRadians(x - nowLocationX);
-					double dy = Math.toRadians(y - nowLocationY);
+					// ARテキストとの距離を求め、ラジアンに変換する	処理時間の関係で10^(-6)をかけるのではなく割った
+					double dx = Math.toRadians((x - nowLocationX) / 1000000);
+					double dy = Math.toRadians((y - nowLocationY) / 1000000);
 					
 					float distance = (float) Math.sqrt(Math.pow(EARTH * dx,2) +
 							Math.pow(Math.cos(Math.toRadians(nowLocationX)) * EARTH * dy, 2));
 					
+					//distanceの単位をキロメートルからメートルに直す
+					distance *= 1000;
 
 					// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
 					if (distance > VIEW_LIMIT) {
@@ -174,12 +178,12 @@ public class ArView extends View {
 			nowLocationX = geoPoint.getLatitudeE6();
 			nowLocationY = geoPoint.getLongitudeE6();
 		}
-// onDrawを呼び出して再描画
-invalidate();
-    }
-    
-    
-    public void readTable(Cursor cursor) {
+		// onDrawを呼び出して再描画
+		invalidate();
+	}
+
+
+	public void readTable(Cursor cursor) {
 		// データベースに保存されている
 		// 全てのARテキストの情報をlistに読み込む
 		if (gpsDataList != null)
@@ -192,16 +196,18 @@ invalidate();
 			data.info = cursor.getString(0);
 			data.latitude = cursor.getInt(1);
 			data.longitude = cursor.getInt(2);
+			data.genre = cursor.getInt(3);
 			gpsDataList.add(data);
 		} while (cursor.moveToNext());
 		//なくなるまでリストに追加する
 	}
 
 
-    //GPS情報を保持するクラス
-    class GPSData {
-		public String info;	
-		public int latitude;	//緯度
-		public int longitude;	//経度
+	//GPS情報を保持するクラス
+	class GPSData {
+		public String info;
+		public int latitude; // 緯度
+		public int longitude; // 経度
+		public int genre;
 	}
 }
