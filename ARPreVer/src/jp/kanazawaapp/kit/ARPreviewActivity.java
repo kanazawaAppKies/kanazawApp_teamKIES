@@ -209,12 +209,12 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		db = helper.getWritableDatabase();
 
 		cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-				"longitude","genre" }, null, null, null, null, null, null);
+				"longitude","genre" }, null, null, null, null, null);
 		// テーブルが空の時内容をセットする
 		if (cursor.getCount() < 1) {
 			presetTable();
 			cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-					"longitude","genre" }, null, null, null, null, null, null);
+					"longitude","genre" }, null, null, null, null, null);
 		}
 	}
 	private void presetTable() {
@@ -226,6 +226,11 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		 */
 		// テーブルの内容が空の時以下の内容をセットする
 		ContentValues values = new ContentValues();
+		values.put("info","金沢工業大学");
+		values.put("latitude",36530349);
+		values.put("longitude", 136627751);
+		values.put("genre", 1);
+		db.insert(DB_TABLE, "", values);
 		values.put("info","金沢工業大学");
 		values.put("latitude",36530349);
 		values.put("longitude", 136627751);
@@ -250,9 +255,11 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		public void onCreate(SQLiteDatabase db) {
 			// テーブルの作成
 			//実行したいSQL文を格納
-			String sql = "create table if not exists "
+			String sql = "create table if not exists"
+						+DB_NAME
+						+"."
 						+ DB_TABLE
-						+ "(info text, latitude numeric, longitude numeric)";
+						+ "(info text, latitude numeric, longitude numeric,genre numeric)";
 			db.execSQL(sql);
 
 		}
@@ -265,6 +272,5 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			onCreate(db);
 		}
 
-		
-	 	}
+	}
 }
