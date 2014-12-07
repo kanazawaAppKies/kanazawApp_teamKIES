@@ -49,7 +49,8 @@ public class ArView extends View {
 	public ArView(Context context,Cursor cursor) {
 		super(context);
 		//データベースの読み込み
-		readTable(cursor);
+		//readTable(cursor);
+		readTable();
 		
 		// 画面サイズの取得
 		Display disp = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -183,25 +184,34 @@ public class ArView extends View {
 	}
 
 
-	public void readTable(Cursor cursor) {
-		// データベースに保存されている
-		// 全てのARテキストの情報をlistに読み込む
-		if (gpsDataList != null)
-			gpsDataList.clear();
+//	public void readTable(Cursor cursor) {
+//		// データベースに保存されている
+//		// 全てのARテキストの情報をlistに読み込む
+//		if (gpsDataList != null)
+//			gpsDataList.clear();
+//		gpsDataList = new ArrayList();
+//
+//		cursor.moveToFirst();
+//		do {
+//			GPSData data = new GPSData();
+//			data.info = cursor.getString(0);
+//			data.latitude = cursor.getInt(1);
+//			data.longitude = cursor.getInt(2);
+//			data.genre = cursor.getInt(3);
+//			gpsDataList.add(data);
+//		} while (cursor.moveToNext());
+//		//なくなるまでリストに追加する
+//	}
+	
+	public void readTable(){
 		gpsDataList = new ArrayList();
-
-		cursor.moveToFirst();
-		do {
-			GPSData data = new GPSData();
-			data.info = cursor.getString(0);
-			data.latitude = cursor.getInt(1);
-			data.longitude = cursor.getInt(2);
-			data.genre = cursor.getInt(3);
-			gpsDataList.add(data);
-		} while (cursor.moveToNext());
-		//なくなるまでリストに追加する
+		GPSData data = new GPSData();
+		data.info = "金沢工業大学";
+		data.latitude = 36530349;
+		data.longitude = 136627751;
+		data.genre = 1;
+		gpsDataList.add(data);
 	}
-
 
 	//GPS情報を保持するクラス
 	class GPSData {
