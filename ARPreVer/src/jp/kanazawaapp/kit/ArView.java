@@ -3,7 +3,6 @@ package jp.kanazawaapp.kit;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,6 +10,7 @@ import android.graphics.Paint.FontMetrics;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,21 +46,33 @@ public class ArView extends View {
 
  	
     
-	public ArView(Context context,Cursor cursor) {
+//	public ArView(Context context,Cursor cursor) {
+	public ArView(Context context) {
 		super(context);
 		//データベースの読み込み
 		//readTable(cursor);
+		
+		Log.i("readTable", "データの読み込み開始", new Throwable());
+		
 		readTable();
+		
+		Log.i("readTable", "データの読み込み完了", new Throwable());
+		Log.i("DpsplaySize", "GetDisplaySizeStart", new Throwable());
 		
 		// 画面サイズの取得
 		Display disp = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		disp.getSize(size);
 		displayX = (int)size.x;
+		
+		Log.i("DpsplaySize", "GetDisplaySizeEnd", new Throwable());
 	}
 
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		
+		Log.i("onDrawSTART", "onDrawを開始", new Throwable());
+		
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
 		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
@@ -120,8 +132,8 @@ public class ArView extends View {
 
 			}
 		}
-
 		
+			Log.i("onDrawEND", "onDrawを終了", new Throwable());
 		
 	}
 	
@@ -160,6 +172,9 @@ public class ArView extends View {
 	}
 
 	private void drawCompass(Canvas canvas, Paint paint) {
+		
+		Log.i("drawCompassSTART", "drawCompassを開始!", new Throwable());
+		
 		 Path path = new Path();
 		 path.moveTo(POS_COMPASSX, POS_COMPASSY - 20);
 		 path.lineTo(POS_COMPASSX + 10, POS_COMPASSY + 10);
@@ -169,6 +184,8 @@ public class ArView extends View {
 		 canvas.rotate(-direction, POS_COMPASSX, POS_COMPASSY);
 		 canvas.drawPath(path, paint);
 		 canvas.rotate(direction, POS_COMPASSX, POS_COMPASSY);
+		 
+		 Log.i("drawCompassEND", "drawCompassを終了!", new Throwable());
 	}
 	
 	//センサー値の取得と再描画
