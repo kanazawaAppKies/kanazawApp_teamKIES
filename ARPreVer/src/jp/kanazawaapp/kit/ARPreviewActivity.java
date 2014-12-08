@@ -181,7 +181,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 
 		//magneticValues		x,y,z軸の磁気密度
 		//accelerometerValues 	x,y,z軸の加速度　
-		if (magneticValues != null && accelerometerValues != null) {
+		if (magneticValues != null && accelerometerValues != null && geomagneticField != null) {
 			float[] R = new float[16];
 			float[] I = new float[16];
 

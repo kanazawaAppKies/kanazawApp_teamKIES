@@ -72,7 +72,6 @@ public class ArView extends View {
 	protected void onDraw(Canvas canvas) {
 		
 		Log.i("onDrawSTART", "onDrawを開始", new Throwable());
-		
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
 		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
@@ -132,7 +131,6 @@ public class ArView extends View {
 
 			}
 		}
-		
 			Log.i("onDrawEND", "onDrawを終了", new Throwable());
 		
 	}
@@ -195,6 +193,7 @@ public class ArView extends View {
 		if(geoPoint != null){
 			nowLocationX = geoPoint.getLatitudeE6();
 			nowLocationY = geoPoint.getLongitudeE6();
+			
 		}
 		// onDrawを呼び出して再描画
 		invalidate();
