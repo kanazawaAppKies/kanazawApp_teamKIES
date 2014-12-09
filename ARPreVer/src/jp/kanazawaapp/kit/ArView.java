@@ -89,15 +89,7 @@ public class ArView extends View {
 				int y = data.latitude;
 				int x = data.longitude;
 
-				// ARテキストとの距離を求め、ラジアンに変換する	処理時間の関係で10^(-6)をかけるのではなく割った
-				double dx = Math.toRadians((x - nowLocationX) / 1000000);
-				double dy = Math.toRadians((y - nowLocationY) / 1000000);
-				
-				float distance = (float) Math.sqrt(Math.pow(EARTH * dx,2) +
-						Math.pow(Math.cos(Math.toRadians(nowLocationX)) * EARTH * dy, 2));
-				
-				//distanceの単位をキロメートルからメートルに直す
-				distance *= 1000;
+				float distance = calculationDistance(x,y);
 
 				// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
 				if (distance > VIEW_LIMIT) {
@@ -228,6 +220,25 @@ public class ArView extends View {
 		data.longitude = 136627751;
 		data.genre = 1;
 		gpsDataList.add(data);
+	}
+	
+	//距離を求める
+	private float calculationDistance(int x, int y){
+		// ARテキストとの距離を求め、ラジアンに変換する
+		//処理時間の関係で10^(-6)をかけるのではなく割った
+		double dx = (x - nowLocationX) / 1000000;
+		double dy = (y - nowLocationY) / 1000000;
+		
+		double radx = Math.toRadians(dx);
+		double rady = Math.toRadians(dy);
+		
+		float distance = (float) Math.sqrt(Math.pow(EARTH * radx,2) +
+				Math.pow(Math.cos(Math.toRadians(nowLocationX)) * EARTH * rady, 2));
+		//distanceの単位をキロメートルからメートルに直す
+		distance *= 1000;
+		
+		return distance;
+		
 	}
 
 	//GPS情報を保持するクラス
