@@ -225,9 +225,8 @@ public class ArView extends View {
 	//距離を求める
 	private float calculationDistance(int x, int y){
 		// ARテキストとの距離を求め、ラジアンに変換する
-		//処理時間の関係で10^(-6)をかけるのではなく割った
-		double dx = (x - nowLocationX) / 1000000;
-		double dy = (y - nowLocationY) / 1000000;
+		double dx = x - nowLocationX * Math.pow(10, -6);
+		double dy = y - nowLocationY * Math.pow(10, -6);
 		
 		double radx = Math.toRadians(dx);
 		double rady = Math.toRadians(dy);
