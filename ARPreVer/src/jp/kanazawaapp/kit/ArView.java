@@ -45,7 +45,7 @@ public class ArView extends View {
 	public static final double EARTH = 6378.137;
 
  	
-    
+    //データベース用のコンテキスト
 //	public ArView(Context context,Cursor cursor) {
 	public ArView(Context context) {
 		super(context);
@@ -192,7 +192,7 @@ public class ArView extends View {
 		invalidate();
 	}
 
-
+//	//データベースから読み込み
 //	public void readTable(Cursor cursor) {
 //		// データベースに保存されている
 //		// 全てのARテキストの情報をlistに読み込む
@@ -212,6 +212,7 @@ public class ArView extends View {
 //		//なくなるまでリストに追加する
 //	}
 	
+	//データの直接読み込み
 	public void readTable(){
 		gpsDataList = new ArrayList();
 		GPSData data = new GPSData();
@@ -222,11 +223,13 @@ public class ArView extends View {
 		gpsDataList.add(data);
 	}
 	
-	//距離を求める
-	private float calculationDistance(int x, int y){
+	/**距離を求める
+	 * @param x 目的地の緯度
+	 * @param y 目的地の軽度*/
+	private float calculationDistance(double x, double y){
 		// ARテキストとの距離を求め、ラジアンに変換する
-		double dx = x - nowLocationX * Math.pow(10, -6);
-		double dy = y - nowLocationY * Math.pow(10, -6);
+		double dx = x - (double)(nowLocationX / 1000000);
+		double dy = y - (double)(nowLocationY / 1000000);
 		
 		double radx = Math.toRadians(dx);
 		double rady = Math.toRadians(dy);

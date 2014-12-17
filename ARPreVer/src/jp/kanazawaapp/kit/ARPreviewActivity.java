@@ -77,6 +77,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		// ARViewの取得
 		
 		arView = new ArView(this);
+		//データベースを使用するのでカーソルをコンテキストに渡す
 //		arView = new ArView(this,cursor);
 		
 		
@@ -238,7 +239,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		
 	}
 	
-//	//ここから下は今後消去
+//	//ここから下はデータベース用
 //	
 //	//データベース系
 //	public void initData() {
