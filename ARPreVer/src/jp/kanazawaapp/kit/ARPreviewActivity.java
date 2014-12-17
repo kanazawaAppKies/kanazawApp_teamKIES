@@ -72,7 +72,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		// データベースの用意
 		//initData();
 		
-		Log.i("ARviewSTART", "ARViewの読み込み開始!", new Throwable());
 
 		// ARViewの取得
 		
@@ -81,15 +80,9 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 //		arView = new ArView(this,cursor);
 		
 		
-		Log.i("ARviewOpened", "ARViewを取得終了!", new Throwable());
 		
 		//閉じる
 		//cursor.close();
-
-		Log.i("ARviewEND", "読み込み終了!", new Throwable());
-
-
-		Log.i("Sensor", "準備", new Throwable());
 		
 		//各種センサーの用意
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -98,16 +91,9 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		//加速度センサー
 		listAcc = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
 		
-		Log.i("Sensor", "完了", new Throwable());
-
-		
-		Log.i("View", "準備", new Throwable());
-		
 		//Viewの重ね合わせ
 		setContentView(new CameraView(this));
 		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-
-		Log.i("View", "完了", new Throwable());
 
 
 	}
@@ -116,15 +102,11 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		protected void onResume() {
 			super.onResume();
 			
-			Log.i("LocationManagerSettingSTART", "ロケーションマネージャーの設定開始!",new Throwable());
-			
 			 //ロケーションマネージャの設定
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, this);
 			//センサー処理の登録
-			
-			Log.i("LocationManagerSettingEND", "ロケーションマネージャーの設定終了!",new Throwable());
-			
+						
 			/* sensorManager
 			 * 第1引数		センサーによって呼び出される関数を持つクラス
 			 * 第2引数		対象となる値を
@@ -167,8 +149,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		
-		Log.i("onSensorChangedSTART", "センサーチェンジの開始!",new Throwable());
-		Log.i("sensorChangJudgeSTART", "センサーの値が変わったかの判定開始!",new Throwable());
 		
 		switch (event.sensor.getType()) {
 			case Sensor.TYPE_ACCELEROMETER:
@@ -178,7 +158,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 				magneticValues  = event.values.clone();
 				break;
 		}
-		Log.i("sensorChangJudgeEND", "センサーの値が変わったかの判定終了!",new Throwable());
 
 		//magneticValues		x,y,z軸の磁気密度
 		//accelerometerValues 	x,y,z軸の加速度　
@@ -199,16 +178,13 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 					//偏差を加算
 					+ geomagneticField.getDeclination();
 			
-			Log.i("Activity dwarScreenSTART", "アクティビティーないでのdrawScreenを開始!",new Throwable());
 			//ArViewに値を渡す
 					
 			//描画をする
 			arView.drawScreen(direction,geoPoint);
 			
-			Log.i("Activity dwarScreenEND", "アクティビティーないでのdrawScreenを終了!",new Throwable());
 		}
 		
-		Log.i("onSensorChangedSTART", "センサーチェンジの終了!",new Throwable());
 	}
 
 	
