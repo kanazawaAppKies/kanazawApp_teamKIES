@@ -52,20 +52,27 @@ public class ArView extends View {
 		//データベースの読み込み
 		//readTable(cursor);
 		
+		Log.i("readTable", "データの読み込み開始", new Throwable());
 		
 		readTable();
 		
+		Log.i("readTable", "データの読み込み完了", new Throwable());
+		Log.i("DpsplaySize", "GetDisplaySizeStart", new Throwable());
 		
 		// 画面サイズの取得
 		Display disp = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		disp.getSize(size);
 		displayX = (int)size.x;
 		
+		Log.i("DpsplaySize", "GetDisplaySizeEnd", new Throwable());
 	}
 
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		
+		Log.i("onDrawSTART", "onDrawを開始", new Throwable());
+		
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
 		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
@@ -76,26 +83,23 @@ public class ArView extends View {
 		
 		//ARテキストの描画
 			for (int i = 0; i < gpsDataList.size(); i++) {
-				Log.i("ondraw", "開始"+i+"回目");
 				// データの読み込み
 				GPSData data = gpsDataList.get(i);
 				String info = data.info;
-				double y = data.latitude;
-				double x = data.longitude;
+				int y = data.latitude;
+				int x = data.longitude;
 
 				float distance = calculationDistance(x,y);
-				
+
 				// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
 				if (distance > VIEW_LIMIT) {
-					Log.i("ondraw", "距離:離れすぎ");
 					continue;
 				}
 				// ARテキストと現在地のなす角を求めて正規化する
 				double angle = Math.atan2(y - nowLocationY, x - nowLocationX);
-				//ラジアンから度に変換
+				//度に変換
 				float degree = (float) Math.toDegrees(angle);
-				//degree = -degree +90;
-				degree = -degree -90;
+				degree = -degree + 90;
 				if (degree < 0)
 					degree = 360 + degree;
 
@@ -118,10 +122,10 @@ public class ArView extends View {
 					float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
 					drawBalloonText(canvas, paint, info, left, 55);
 
-				}
-
+			}
 		}
 		
+			Log.i("onDrawEND", "onDrawを終了", new Throwable());
 		
 	}
 	
@@ -161,6 +165,7 @@ public class ArView extends View {
 
 	private void drawCompass(Canvas canvas, Paint paint) {
 		
+		Log.i("drawCompassSTART", "drawCompassを開始!", new Throwable());
 		
 		 Path path = new Path();
 		 path.moveTo(POS_COMPASSX, POS_COMPASSY - 20);
@@ -171,7 +176,8 @@ public class ArView extends View {
 		 canvas.rotate(-direction, POS_COMPASSX, POS_COMPASSY);
 		 canvas.drawPath(path, paint);
 		 canvas.rotate(direction, POS_COMPASSX, POS_COMPASSY);
-	
+		 
+		 Log.i("drawCompassEND", "drawCompassを終了!", new Throwable());
 	}
 	
 	//センサー値の取得と再描画
@@ -211,15 +217,8 @@ public class ArView extends View {
 		gpsDataList = new ArrayList();
 		GPSData data = new GPSData();
 		data.info = "金沢工業大学";
-		data.latitude = 36.530349;
-		data.longitude = 136.627751;
-		data.genre = 1;
-		gpsDataList.add(data);
-		
-		data = new GPSData();
-		data.info = "高尾台中学";
-		data.latitude = 36.523163;
-		data.longitude = 136.634866;
+		data.latitude = 36530349;
+		data.longitude = 136627751;
 		data.genre = 1;
 		gpsDataList.add(data);
 	}
@@ -228,21 +227,18 @@ public class ArView extends View {
 	 * @param x 目的地の緯度
 	 * @param y 目的地の軽度*/
 	private float calculationDistance(double x, double y){
-		Log.i("x", "緯度:"+(double)(nowLocationX/1000000));
-		Log.i("x", "緯度:"+(nowLocationX * Math.pow(10,-6)));
 		// ARテキストとの距離を求め、ラジアンに変換する
-		double dx = x - (nowLocationX * Math.pow(10,-6));
-		double dy = y - (nowLocationY * Math.pow(10,-6));
+		double dx = x - (double)(nowLocationX / 1000000);
+		double dy = y - (double)(nowLocationY / 1000000);
 		
 		double radx = Math.toRadians(dx);
 		double rady = Math.toRadians(dy);
 		
 		float distance = (float) Math.sqrt(Math.pow(EARTH * radx,2) +
 				Math.pow(Math.cos(Math.toRadians(nowLocationX)) * EARTH * rady, 2));
-//		//distanceの単位をキロメートルからメートルに直す
-//		distance *= 1000;
+		//distanceの単位をキロメートルからメートルに直す
+		distance *= 1000;
 		
-		Log.i("ondraw", "距離:"+(int)distance);
 		return distance;
 		
 	}
@@ -250,8 +246,8 @@ public class ArView extends View {
 	//GPS情報を保持するクラス
 	class GPSData {
 		public String info;
-		public double latitude; // 緯度
-		public double longitude; // 経度
+		public int latitude; // 緯度
+		public int longitude; // 経度
 		public int genre;
 	}
 }
