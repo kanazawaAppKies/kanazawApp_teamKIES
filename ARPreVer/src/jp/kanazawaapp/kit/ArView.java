@@ -86,8 +86,8 @@ public class ArView extends View {
 				// データの読み込み
 				GPSData data = gpsDataList.get(i);
 				String info = data.info;
-				int y = data.latitude;
-				int x = data.longitude;
+				double y = data.latitude;
+				double x = data.longitude;
 
 				float distance = calculationDistance(x,y);
 
@@ -96,7 +96,7 @@ public class ArView extends View {
 					continue;
 				}
 				// ARテキストと現在地のなす角を求めて正規化する
-				double angle = Math.atan2(y - nowLocationY, x - nowLocationX);
+				double angle = Math.atan2(y*1000000 - nowLocationY, x*1000000 - nowLocationX);
 				//度に変換
 				float degree = (float) Math.toDegrees(angle);
 				degree = -degree + 90;
@@ -217,8 +217,8 @@ public class ArView extends View {
 		gpsDataList = new ArrayList();
 		GPSData data = new GPSData();
 		data.info = "金沢工業大学";
-		data.latitude = 36530349;
-		data.longitude = 136627751;
+		data.latitude = 36.530349;
+		data.longitude = 136.627751;
 		data.genre = 1;
 		gpsDataList.add(data);
 	}
@@ -246,8 +246,8 @@ public class ArView extends View {
 	//GPS情報を保持するクラス
 	class GPSData {
 		public String info;
-		public int latitude; // 緯度
-		public int longitude; // 経度
+		public double latitude; // 緯度
+		public double longitude; // 経度
 		public int genre;
 	}
 }
