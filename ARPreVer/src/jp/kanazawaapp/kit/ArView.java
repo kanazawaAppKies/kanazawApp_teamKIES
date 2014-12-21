@@ -10,29 +10,13 @@ import android.graphics.Paint.FontMetrics;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.google.android.maps.GeoPoint;
 
-/**
- * @author AYUMU
- *
- */
-/**
- * @author AYUMU
- *
- */
-/**
- * @author AYUMU
- *
- */
-/**
- * @author AYUMU
- *
- */
+
 public class ArView extends View {
 
 	//コンパスの描画位置を指定する
@@ -43,21 +27,24 @@ public class ArView extends View {
 	// 向きを保持する変数 (方角を指定する)
 	float direction;
 
-	// 現在地を保持する変数
-	int nowLocationX, nowLocationY;
+	/**現在地の緯度*/
+	int nowLocationLat;
+	/**現在位置の経度*/
+	int nowLocationLong;
 
 	// ARテキストの情報を保持するオブジェクト
 	private ArrayList<GPSData> gpsDataList;
  	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
+	/**画角(度表記)*/
 	private final int ANGLE = 60;
-	// ARテキストの見える範囲を指定する(メートル表記)
+	/** ARテキスを表示する最大距離(メートル表記)*/
 	private final float VIEW_LIMIT = 100000;
 	// ディスプレイサイズ
 	private int displayX;
 	Point size = new Point();
 	
-	//地球の半径
+	/**地球の半径(キロメートル表記)*/
 	public static final double EARTH = 6378.137;
 
  	
@@ -68,26 +55,19 @@ public class ArView extends View {
 		//データベースの読み込み
 		//readTable(cursor);
 		
-		Log.i("readTable", "データの読み込み開始", new Throwable());
-		
 		readTable();
-		
-		Log.i("readTable", "データの読み込み完了", new Throwable());
-		Log.i("DpsplaySize", "GetDisplaySizeStart", new Throwable());
 		
 		// 画面サイズの取得
 		Display disp = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		disp.getSize(size);
 		displayX = (int)size.x;
 		
-		Log.i("DpsplaySize", "GetDisplaySizeEnd", new Throwable());
 	}
 
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		
-		Log.i("onDrawSTART", "onDrawを開始", new Throwable());
+
 		
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
@@ -112,12 +92,14 @@ public class ArView extends View {
 					continue;
 				}
 				// ARテキストと現在地のなす角を求めて正規化する
-				double angle = Math.atan2(y*1000000 - nowLocationY, x*1000000 - nowLocationX);
+				double angle = Math.atan2(y*1000000 - nowLocationLong, x*1000000 - nowLocationLat);
 				//度に変換
 				float degree = (float) Math.toDegrees(angle);
-				degree = -degree + 90;
+				degree = -degree - 90;
 				if (degree < 0)
 					degree = 360 + degree;
+				else if(degree > 360)
+					degree = degree - 360;
 
 				// 端末の向きとARテキストとの角度の差を求める
 				float sub = degree - direction;
@@ -187,9 +169,7 @@ public class ArView extends View {
 
 	private void drawCompass(Canvas canvas, Paint paint) {
 		
-		Log.i("drawCompassSTART", "drawCompassを開始!", new Throwable());
-		
-		 Path path = new Path();
+		Path path = new Path();
 		 path.moveTo(POS_COMPASSX, POS_COMPASSY - 20);
 		 path.lineTo(POS_COMPASSX + 10, POS_COMPASSY + 10);
 		 path.lineTo(POS_COMPASSX - 10, POS_COMPASSY + 10);
@@ -199,7 +179,6 @@ public class ArView extends View {
 		 canvas.drawPath(path, paint);
 		 canvas.rotate(direction, POS_COMPASSX, POS_COMPASSY);
 		 
-		 Log.i("drawCompassEND", "drawCompassを終了!", new Throwable());
 	}
 	
 	
@@ -212,8 +191,8 @@ public class ArView extends View {
 		// センサーの値から端末の向きを計算する
 		direction = (preDirection + 450) % 360;
 		if(geoPoint != null){
-			nowLocationX = geoPoint.getLatitudeE6();
-			nowLocationY = geoPoint.getLongitudeE6();
+			nowLocationLat = geoPoint.getLatitudeE6();
+			nowLocationLong = geoPoint.getLongitudeE6();
 		}
 		// onDrawを呼び出して再描画
 		invalidate();
@@ -250,19 +229,22 @@ public class ArView extends View {
 		gpsDataList.add(data);
 	}
 	
-	/**距離を求める
+	/**
+	 * 目標地点までの距離を求める
 	 * @param lat 目的地の緯度
-	 * @param lon 目的地の軽度*/
+	 * @param lon 目的地の軽度
+	 * @return 目標までの距離(メートル)
+	 * @see <a href="http://www.kiteretsu-so.com/archives/1183">距離を求める</a>*/
 	private float calculationDistance(double lat, double lon){
 		// ARテキストとの距離を求め、ラジアンに変換する
-		double dlat = lat - (double)(nowLocationX / 1000000);
-		double dlon = lon - (double)(nowLocationY / 1000000);
+		double dlat = lat - (double)(nowLocationLat / 1000000);
+		double dlon = lon - (double)(nowLocationLong / 1000000);
 		
 		double radlat = Math.toRadians(dlat);
 		double radlon = Math.toRadians(dlon);
 		
 		float distance = (float) Math.sqrt(Math.pow(EARTH * radlat,2) +
-				Math.pow(Math.cos(Math.toRadians(nowLocationX)) * EARTH * radlon, 2));
+				Math.pow(Math.cos(Math.toRadians(nowLocationLat)) * EARTH * radlon, 2));
 				
 		return distance;
 		
