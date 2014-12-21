@@ -17,6 +17,22 @@ import android.view.WindowManager;
 
 import com.google.android.maps.GeoPoint;
 
+/**
+ * @author AYUMU
+ *
+ */
+/**
+ * @author AYUMU
+ *
+ */
+/**
+ * @author AYUMU
+ *
+ */
+/**
+ * @author AYUMU
+ *
+ */
 public class ArView extends View {
 
 	//コンパスの描画位置を指定する
@@ -125,10 +141,16 @@ public class ArView extends View {
 			}
 		}
 		
-			Log.i("onDrawEND", "onDrawを終了", new Throwable());
-		
 	}
 	
+	/**
+	 * ARの噴出しの描写
+	 * @param canvas キャンバス
+	 * @param paint ペイント
+	 * @param text 施設名
+	 * @param left 左側の位置
+	 * @param top 上側の位置　
+	 */
 	private void drawBalloonText(Canvas canvas, Paint paint, String text,float left, int top) {
 		// 文字列の幅を取得
 		float textWidth = paint.measureText(text);
@@ -180,7 +202,12 @@ public class ArView extends View {
 		 Log.i("drawCompassEND", "drawCompassを終了!", new Throwable());
 	}
 	
-	//センサー値の取得と再描画
+	
+	/**
+	 * センサー値の取得と再描画
+	 * @param preDirection 磁気センサーで取得した方位
+	 * @param geoPoint GPSセンサーで取得した現在地の情報
+	 */
 	public void drawScreen(float preDirection,GeoPoint geoPoint) {
 		// センサーの値から端末の向きを計算する
 		direction = (preDirection + 450) % 360;
@@ -224,30 +251,47 @@ public class ArView extends View {
 	}
 	
 	/**距離を求める
-	 * @param x 目的地の緯度
-	 * @param y 目的地の軽度*/
-	private float calculationDistance(double x, double y){
+	 * @param lat 目的地の緯度
+	 * @param lon 目的地の軽度*/
+	private float calculationDistance(double lat, double lon){
 		// ARテキストとの距離を求め、ラジアンに変換する
-		double dx = x - (double)(nowLocationX / 1000000);
-		double dy = y - (double)(nowLocationY / 1000000);
+		double dlat = lat - (double)(nowLocationX / 1000000);
+		double dlon = lon - (double)(nowLocationY / 1000000);
 		
-		double radx = Math.toRadians(dx);
-		double rady = Math.toRadians(dy);
+		double radlat = Math.toRadians(dlat);
+		double radlon = Math.toRadians(dlon);
 		
-		float distance = (float) Math.sqrt(Math.pow(EARTH * radx,2) +
-				Math.pow(Math.cos(Math.toRadians(nowLocationX)) * EARTH * rady, 2));
-		//distanceの単位をキロメートルからメートルに直す
-		distance *= 1000;
-		
+		float distance = (float) Math.sqrt(Math.pow(EARTH * radlat,2) +
+				Math.pow(Math.cos(Math.toRadians(nowLocationX)) * EARTH * radlon, 2));
+				
 		return distance;
 		
 	}
 
-	//GPS情報を保持するクラス
+	/**
+	 * GPS情報を保持するクラス
+	 */
 	class GPSData {
+		/**
+		 * 施設名<br>
+		 * 漢字、英字可<br>
+		 * 文字数制限なし<br>
+		 */
 		public String info;
+		/**
+		 * 緯度<br>
+		 * 10進法で記載
+		 */
 		public double latitude; // 緯度
+		/**
+		 * 経度<br>
+		 * 10進法で記載
+		 */
 		public double longitude; // 経度
+		/**
+		 * ジャンルの種類<br>
+		 * 1 観光<br>
+		 * 2 飲食*/
 		public int genre;
 	}
 }
