@@ -20,11 +20,13 @@ import com.google.android.maps.GeoPoint;
 public class ArView extends View {
 
 	//コンパスの描画位置を指定する
+	/**コンパスの横の位置*/
 	private final float POS_COMPASSX = 30;
+	/**コンパスの縦の位置*/
 	private final float POS_COMPASSY = 30;
 
 
-	// 向きを保持する変数 (方角を指定する)
+	/**向きを保持する変数 (方角を指定する)*/
 	float direction;
 
 	/**現在地の緯度*/
@@ -32,7 +34,7 @@ public class ArView extends View {
 	/**現在位置の経度*/
 	int nowLocationLong;
 
-	// ARテキストの情報を保持するオブジェクト
+	/** ARテキストの情報を保持するオブジェクト*/
 	private ArrayList<GPSData> gpsDataList;
  	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
@@ -40,7 +42,7 @@ public class ArView extends View {
 	private final int ANGLE = 60;
 	/** ARテキスを表示する最大距離(メートル表記)*/
 	private final float VIEW_LIMIT = 100000;
-	// ディスプレイサイズ
+	/** ディスプレイサイズ*/
 	private int displayX;
 	Point size = new Point();
 	
@@ -67,14 +69,12 @@ public class ArView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-
 		
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
 		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
 		paint.setAntiAlias(true);
 		
-		//方角を示すためのコンパス描画開始 現在は三角形だが、きちんと作る　画像？パス？要選択
 		drawCompass(canvas, paint);
 		
 		//ARテキストの描画
@@ -95,7 +95,7 @@ public class ArView extends View {
 				double angle = Math.atan2(y*1000000 - nowLocationLong, x*1000000 - nowLocationLat);
 				//度に変換
 				float degree = (float) Math.toDegrees(angle);
-				degree = -degree - 90;
+				degree = -degree + 90;
 				if (degree < 0)
 					degree = 360 + degree;
 				else if(degree > 360)
@@ -167,6 +167,9 @@ public class ArView extends View {
 		
 	}
 
+	/**方角を示すためのコンパス描画開始 現在は三角形だが、きちんと作る　画像？パス？要選択
+	 * @param canvas キャンバス
+	 * @param paint ペイント*/
 	private void drawCompass(Canvas canvas, Paint paint) {
 		
 		Path path = new Path();
@@ -250,9 +253,7 @@ public class ArView extends View {
 		
 	}
 
-	/**
-	 * GPS情報を保持するクラス
-	 */
+	/**GPS情報を保持するクラス*/
 	class GPSData {
 		/**
 		 * 施設名<br>
@@ -262,12 +263,12 @@ public class ArView extends View {
 		public String info;
 		/**
 		 * 緯度<br>
-		 * 10進法で記載
+		 * 10進法で実数
 		 */
 		public double latitude; // 緯度
 		/**
 		 * 経度<br>
-		 * 10進法で記載
+		 * 10進法で実数
 		 */
 		public double longitude; // 経度
 		/**
