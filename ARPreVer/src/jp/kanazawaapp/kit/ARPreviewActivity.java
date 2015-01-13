@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.ContentValues;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.database.Cursor;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -18,7 +18,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup.LayoutParams;
@@ -70,26 +69,17 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		// データベースの用意
-		//initData();
-		
-		Log.i("ARviewSTART", "ARViewの読み込み開始!", new Throwable());
 
 		// ARViewの取得
 		
 		arView = new ArView(this);
 		//データベースを使用するのでカーソルをコンテキストに渡す
 //		arView = new ArView(this,cursor);
-		
-		
-		Log.i("ARviewOpened", "ARViewを取得終了!", new Throwable());
+
 		
 		//閉じる
 		//cursor.close();
 
-		Log.i("ARviewEND", "読み込み終了!", new Throwable());
-
-
-		Log.i("Sensor", "準備", new Throwable());
 		
 		//各種センサーの用意
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -98,16 +88,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		//加速度センサー
 		listAcc = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
 		
-		Log.i("Sensor", "完了", new Throwable());
-
-		
-		Log.i("View", "準備", new Throwable());
-		
 		//Viewの重ね合わせ
 		setContentView(new CameraView(this));
 		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
-		Log.i("View", "完了", new Throwable());
 
 
 	}
@@ -116,15 +100,15 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		protected void onResume() {
 			super.onResume();
 			
-			Log.i("LocationManagerSettingSTART", "ロケーションマネージャーの設定開始!",new Throwable());
 			
 			 //ロケーションマネージャの設定
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, this);
+			if(locationManager != null){
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, this);
+			}
+			
+			checkGpsService();
 			//センサー処理の登録
-			
-			Log.i("LocationManagerSettingEND", "ロケーションマネージャーの設定終了!",new Throwable());
-			
 			/* sensorManager
 			 * 第1引数		センサーによって呼び出される関数を持つクラス
 			 * 第2引数		対象となる値を
@@ -133,7 +117,37 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			sensorManager.registerListener(this,listMag.get(0), SensorManager.SENSOR_DELAY_NORMAL);
 			sensorManager.registerListener(this,listAcc.get(0), SensorManager.SENSOR_DELAY_NORMAL);
 		}
-		
+		/**GPSが有効になっていないか調べ無効なら有効にするかの設定画面を表示
+		 * @see <a href="http://www.noveluck.co.jp/blog/archives/159">GPS設定</a>
+		 */
+		private void checkGpsService() {
+			//GPSセンサーが使用可か？
+			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+		        alertDialogBuilder.setMessage(getResources().getText(R.string.Gps_Setting))
+		         .setCancelable(false)
+		 
+		        //GPS設定画面起動用ボタンとイベントの定義
+		         .setPositiveButton(getResources().getText(R.string.Gps_Setting_Start),
+		              new DialogInterface.OnClickListener(){
+		              public void onClick(DialogInterface dialog, int id){
+		                  Intent callGPSSettingIntent = new Intent(
+		                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		                startActivity(callGPSSettingIntent);
+		              }
+		         });
+		        //キャンセルボタン処理
+		         alertDialogBuilder.setNegativeButton(getResources().getText(R.string.Gps_Setting_Cancel),
+		              new DialogInterface.OnClickListener(){
+		              public void onClick(DialogInterface dialog, int id){
+		                   dialog.cancel();
+		              }
+		         });
+		        AlertDialog alert = alertDialogBuilder.create();
+		    // 設定画面へ移動するかの問い合わせダイアログを表示
+		        alert.show();
+			}
+		}
 		@Override
 		protected void onStop() {
 			super.onStop();
@@ -167,8 +181,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		
-		Log.i("onSensorChangedSTART", "センサーチェンジの開始!",new Throwable());
-		Log.i("sensorChangJudgeSTART", "センサーの値が変わったかの判定開始!",new Throwable());
 		
 		switch (event.sensor.getType()) {
 			case Sensor.TYPE_ACCELEROMETER:
@@ -178,7 +190,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 				magneticValues  = event.values.clone();
 				break;
 		}
-		Log.i("sensorChangJudgeEND", "センサーの値が変わったかの判定終了!",new Throwable());
 
 		//magneticValues		x,y,z軸の磁気密度
 		//accelerometerValues 	x,y,z軸の加速度　
@@ -199,16 +210,11 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 					//偏差を加算
 					+ geomagneticField.getDeclination();
 			
-			Log.i("Activity dwarScreenSTART", "アクティビティーないでのdrawScreenを開始!",new Throwable());
 			//ArViewに値を渡す
-					
 			//描画をする
 			arView.drawScreen(direction,geoPoint);
-			
-			Log.i("Activity dwarScreenEND", "アクティビティーないでのdrawScreenを終了!",new Throwable());
 		}
 		
-		Log.i("onSensorChangedSTART", "センサーチェンジの終了!",new Throwable());
 	}
 
 	
