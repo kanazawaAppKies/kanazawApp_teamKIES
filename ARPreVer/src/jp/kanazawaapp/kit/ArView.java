@@ -2,6 +2,7 @@ package jp.kanazawaapp.kit;
 
 import java.util.ArrayList;
 
+import android.app.Application.ActivityLifecycleCallbacks;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -82,24 +83,22 @@ public class ArView extends View {
 				// データの読み込み
 				GPSData data = gpsDataList.get(i);
 				String info = data.info;
-				double y = data.latitude;
-				double x = data.longitude;
+				double dlat = data.latitude;
+				double dlong = data.longitude;
 
-				float distance = calculationDistance(x,y);
+				float distance = calculationDistance(dlat,dlong);
 
 				// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
 				if (distance > VIEW_LIMIT) {
 					continue;
 				}
 				// ARテキストと現在地のなす角を求めて正規化する
-				double angle = Math.atan2(y*1000000 - nowLocationLong, x*1000000 - nowLocationLat);
+				double angle = Math.atan2(dlat*1000000 - nowLocationLat, dlong*1000000 - nowLocationLong);
 				//度に変換
 				float degree = (float) Math.toDegrees(angle);
 				degree = -degree + 90;
 				if (degree < 0)
 					degree = 360 + degree;
-				else if(degree > 360)
-					degree = degree - 360;
 
 				// 端末の向きとARテキストとの角度の差を求める
 				float sub = degree - direction;

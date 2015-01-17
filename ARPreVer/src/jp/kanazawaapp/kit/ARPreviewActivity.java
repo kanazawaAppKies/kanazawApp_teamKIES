@@ -20,9 +20,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 
@@ -91,6 +93,12 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		//Viewの重ね合わせ
 		setContentView(new CameraView(this));
 		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+		
+		
+		
+		
+		View view = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
+		addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
 
 
@@ -243,6 +251,14 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	@Override
 	public void onProviderDisabled(String provider) {
 		
+	}
+	
+	
+	
+	
+	public void ClickButton(View view){
+		TextView textView = (TextView)findViewById(R.id.textView1);
+		textView.setText("クリックされました");
 	}
 	
 //	//ここから下はデータベース用
