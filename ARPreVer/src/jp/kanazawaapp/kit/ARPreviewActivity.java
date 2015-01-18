@@ -93,10 +93,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		//Viewの重ね合わせ
 		setContentView(new CameraView(this));
 		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-		
-		
-		
-		
+		//ボタン用のレイアアウト
+		createButton();
 		View view = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
 		addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
@@ -259,6 +257,14 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public void ClickButton(View view){
 		TextView textView = (TextView)findViewById(R.id.textView1);
 		textView.setText("クリックされました");
+	}
+	
+	/**ボタンを作成する*/
+	public void createButton(){
+		for (int i = 0; i < ArView.gpsDataList.size(); i++) {
+			ArView.GPSData data =  ArView.gpsDataList.get(i);
+			
+		}
 	}
 	
 //	//ここから下はデータベース用

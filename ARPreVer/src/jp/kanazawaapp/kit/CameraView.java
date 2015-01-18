@@ -60,7 +60,6 @@ public class CameraView extends SurfaceView  implements SurfaceHolder.Callback{
 
 		// プレビューの開始
         camera.startPreview();
-		
 	}
 
 	//終了時

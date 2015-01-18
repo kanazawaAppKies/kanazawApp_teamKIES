@@ -36,7 +36,7 @@ public class ArView extends View {
 	int nowLocationLong;
 
 	/** ARテキストの情報を保持するオブジェクト*/
-	private ArrayList<GPSData> gpsDataList;
+	public static ArrayList<GPSData> gpsDataList;
  	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	/**画角(度表記)*/
@@ -230,7 +230,7 @@ public class ArView extends View {
 		data.genre = 1;
 		gpsDataList.add(data);
 	}
-	
+
 	/**
 	 * 目標地点までの距離を求める
 	 * @param lat 目的地の緯度
