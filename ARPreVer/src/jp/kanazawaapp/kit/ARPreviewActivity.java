@@ -142,11 +142,12 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		                startActivity(callGPSSettingIntent);
 		              }
 		         });
-		        //キャンセルボタン処理
+		        //終了ボタン処理
 		         alertDialogBuilder.setNegativeButton(getResources().getText(R.string.Gps_Setting_Cancel),
 		              new DialogInterface.OnClickListener(){
 		              public void onClick(DialogInterface dialog, int id){
 		                   dialog.cancel();
+		                   finish();
 		              }
 		         });
 		        AlertDialog alert = alertDialogBuilder.create();
@@ -263,7 +264,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public void createButton(){
 		for (int i = 0; i < ArView.gpsDataList.size(); i++) {
 			ArView.GPSData data =  ArView.gpsDataList.get(i);
-			
 		}
 	}
 	
