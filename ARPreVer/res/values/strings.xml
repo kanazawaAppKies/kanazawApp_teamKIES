@@ -6,6 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="Gps_Setting">GPSが有効になっていません。\n有効化しますか？</string>
     <string name="Gps_Setting_Start">GPS設定を起動</string>
-    <string name="Gps_Setting_Cancel">キャンセル</string>
+    <string name="Gps_Setting_Cancel">アプリの終了</string>
     
 </resources>
