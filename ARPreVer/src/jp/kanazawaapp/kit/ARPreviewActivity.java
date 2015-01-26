@@ -3,6 +3,7 @@ package jp.kanazawaapp.kit;
 import java.util.Date;
 import java.util.List;
 
+import android.R.string;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -46,15 +47,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	private GeoPoint geoPoint;
 	//磁北補正用
 	private GeomagneticField geomagneticField;  
-// データベースで使用する変数
-	//データベース名
-	private final static String DB_NAME = "gps_data.db";
-	//使用するテーブル
-	private final static String DB_TABLE = "gps_data";
-	//バージョン情報
-	private final static int DB_VERSION = 1;
-	//コンストラクタ
-	private SQLiteDatabase db;
+	
+	
+	/**パッケージネーム*/
+	public static String packageName;
 	
 	
 //	//カーソル
@@ -98,7 +94,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		View view = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
 		addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
-
+		//パッケージネームの取得
+		packageName = getPackageName();
 
 	}
 	//activity実行直前
@@ -267,77 +264,4 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		}
 	}
 	
-//	//ここから下はデータベース用
-//	
-//	//データベース系
-//	public void initData() {
-//		// SQLiteOpenHelperを継承したクラスを使用してデータベースを作成します
-//		SQLiteOpenHelperEx helper = new SQLiteOpenHelperEx(this);
-//		db = helper.getWritableDatabase();
-//
-//		cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-//				"longitude","genre" }, null, null, null, null, null);
-//		// テーブルが空の時内容をセットする
-//		if (cursor.getCount() < 1) {
-//			presetTable();
-//			cursor = db.query(DB_TABLE, new String[] { "info", "latitude",
-//					"longitude","genre" }, null, null, null, null, null);
-//		}
-//	}
-//	private void presetTable() {
-//		/*
-//		 * ジャンルID
-//		 * 1 : 観光
-//		 * 2 : 飲食
-//		 * 3 : 撮影
-//		 */
-//		// テーブルの内容が空の時以下の内容をセットする
-//		ContentValues values = new ContentValues();
-//		values.put("info","金沢工業大学");
-//		values.put("latitude",36530349);
-//		values.put("longitude", 136627751);
-//		values.put("genre", 1);
-//		db.insert(DB_TABLE, "", values);
-//		values.put("info","金沢工業大学");
-//		values.put("latitude",36530349);
-//		values.put("longitude", 136627751);
-//		values.put("genre", 1);
-//		db.insert(DB_TABLE, "", values);
-//	}
-//	
-//	
-//	
-//	
-//	
-//	//データベース用のクラス
-//	public class SQLiteOpenHelperEx extends SQLiteOpenHelper {
-//		// コンストラクタ
-//		public SQLiteOpenHelperEx(Context context) {
-//			//データベースの生成 
-//			//2つ目の引数をnullにすることでメモリ上にデータベースが作られる
-//			super(context, DB_NAME, null, DB_VERSION);
-//		}
-//
-//		@Override
-//		public void onCreate(SQLiteDatabase db) {
-//			// テーブルの作成
-//			//実行したいSQL文を格納
-//			String sql = "create table if not exists"
-//						+DB_NAME
-//						+"."
-//						+ DB_TABLE
-//						+ "(info text, latitude numeric, longitude numeric,genre numeric)";
-//			db.execSQL(sql);
-//
-//		}
-//
-//		@Override
-//		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//			// データベースのアップグレード	
-//			// ここでは、テーブルを作り直しをしています
-//			db.execSQL("drop table if exists " + DB_TABLE);
-//			onCreate(db);
-//		}
-//
-//	}
 }

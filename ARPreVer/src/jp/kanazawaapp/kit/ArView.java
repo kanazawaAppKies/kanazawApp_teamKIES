@@ -36,7 +36,7 @@ public class ArView extends View {
 	int nowLocationLong;
 
 	/** ARテキストの情報を保持するオブジェクト*/
-	public static ArrayList<GPSData> gpsDataList;
+	public static ArrayList<GPSData> gpsDataList = new ArrayList();
  	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	/**画角(度表記)*/
@@ -222,7 +222,6 @@ public class ArView extends View {
 	
 	//データの直接読み込み
 	public void readTable(){
-		gpsDataList = new ArrayList();
 		GPSData data = new GPSData();
 		data.info = "金沢工業大学";
 		data.latitude = 36.530349;
@@ -253,7 +252,7 @@ public class ArView extends View {
 	}
 
 	/**GPS情報を保持するクラス*/
-	class GPSData {
+	public class GPSData {
 		/**
 		 * 施設名<br>
 		 * 漢字、英字可<br>
@@ -275,5 +274,17 @@ public class ArView extends View {
 		 * 1 観光<br>
 		 * 2 飲食*/
 		public int genre;
+		/**
+		 * オープン時間
+		 */
+		public int open;
+		/**
+		 * 閉店時間
+		 */
+		public int close;
+		/**
+		 * 定休日
+		 * */
+		public int rest;
 	}
 }
