@@ -3,6 +3,8 @@ package jp.kanazawaapp.kit;
 import java.util.Date;
 import java.util.List;
 
+import jp.kanazawaapp.kit.databaseDefine.GPSData;
+
 import android.R.string;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,6 +61,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//パッケージネームの取得
+		packageName = getPackageName();
 		
 		// フルスクリーン指定
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -94,8 +98,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		View view = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
 		addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
-		//パッケージネームの取得
-		packageName = getPackageName();
+		
 
 	}
 	//activity実行直前
@@ -260,7 +263,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	/**ボタンを作成する*/
 	public void createButton(){
 		for (int i = 0; i < ArView.gpsDataList.size(); i++) {
-			ArView.GPSData data =  ArView.gpsDataList.get(i);
+			GPSData data =  ArView.gpsDataList.get(i);
 		}
 	}
 	

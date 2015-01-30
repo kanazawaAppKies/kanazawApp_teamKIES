@@ -36,7 +36,7 @@ public class ArView extends View {
 	int nowLocationLong;
 
 	/** ARテキストの情報を保持するオブジェクト*/
-	public static ArrayList<GPSData> gpsDataList = new ArrayList();
+	public static ArrayList<databaseDefine.GPSData> gpsDataList = new ArrayList();
  	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	/**画角(度表記)*/
@@ -58,7 +58,7 @@ public class ArView extends View {
 		//データベースの読み込み
 		//readTable(cursor);
 		
-		readTable();
+		databaseDefine.databaseInsert();
 		
 		// 画面サイズの取得
 		Display disp = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -81,7 +81,7 @@ public class ArView extends View {
 		//ARテキストの描画
 			for (int i = 0; i < gpsDataList.size(); i++) {
 				// データの読み込み
-				GPSData data = gpsDataList.get(i);
+				databaseDefine.GPSData data = gpsDataList.get(i);
 				String info = data.info;
 				double dlat = data.latitude;
 				double dlong = data.longitude;
@@ -220,15 +220,15 @@ public class ArView extends View {
 //		//なくなるまでリストに追加する
 //	}
 	
-	//データの直接読み込み
-	public void readTable(){
-		GPSData data = new GPSData();
-		data.info = "金沢工業大学";
-		data.latitude = 36.530349;
-		data.longitude = 136.627751;
-		data.genre = 1;
-		gpsDataList.add(data);
-	}
+//	//データの直接読み込み
+//	public void readTable(){
+//		GPSData data = new GPSData();
+//		data.info = "金沢工業大学";
+//		data.latitude = 36.530349;
+//		data.longitude = 136.627751;
+//		data.genre = 1;
+//		gpsDataList.add(data);
+//	}
 
 	/**
 	 * 目標地点までの距離を求める
