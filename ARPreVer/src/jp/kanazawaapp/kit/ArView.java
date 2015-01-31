@@ -2,15 +2,15 @@ package jp.kanazawaapp.kit;
 
 import java.util.ArrayList;
 
-import android.app.Application.ActivityLifecycleCallbacks;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.FontMetrics;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -117,8 +117,8 @@ public class ArView extends View {
 					float textWidth = paint.measureText(info);
 					float diff = (sub / (ANGLE / 2)) / 2;
 					float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
-					//drawBalloonText(canvas, paint, info, left, 55);
-					ARPreviewActivity.createButton(info,left,55);
+					drawBalloonText(canvas, paint, info, left, 55,distance);
+					//ARPreviewActivity.setIcon(info,left,55,i);
 
 			}
 		}
@@ -132,39 +132,46 @@ public class ArView extends View {
 	 * @param text 施設名
 	 * @param left 左側の位置
 	 * @param top 上側の位置　
+	 * @param distance 
 	 */
-	private void drawBalloonText(Canvas canvas, Paint paint, String text,float left, int top) {
-		// 文字列の幅を取得
-		float textWidth = paint.measureText(text);
-		// フォント情報の取得
-		FontMetrics fontMetrics = paint.getFontMetrics();
-
-		// 文字列の5ポイント外側を囲む座標を求める
-		float bLeft = left - 5;
-		float bRight = left + textWidth + 5;
-		float bTop = top + fontMetrics.ascent - 5;
-		float bBottom = top + fontMetrics.descent + 5;
-
-		// 吹き出しの描画
-		RectF rectF = new RectF(bLeft, bTop, bRight, bBottom);
-		paint.setColor(Color.LTGRAY);
-		canvas.drawRoundRect(rectF, 5, 5, paint);
-
-		// 三角形の描画
-		paint.setStyle(Paint.Style.FILL_AND_STROKE);
-		Path path = new Path();
-		float center = left + textWidth / 2;
-		float triangleSize = paint.getTextSize() / 3;
-		path.moveTo(center, bBottom + triangleSize);
-		path.lineTo(center - triangleSize / 2, bBottom - 1);
-		path.lineTo(center + triangleSize / 2, bBottom - 1);
-		path.lineTo(center, bBottom + triangleSize);
-		canvas.drawPath(path, paint);
-
-		// 文字列の描画
-		paint.setColor(Color.WHITE);
-		canvas.drawText(text, left, top, paint);
-		
+	private void drawBalloonText(Canvas canvas, Paint paint, String text,float left, int top, float distance) {
+//		// 文字列の幅を取得
+//		float textWidth = paint.measureText(text);
+//		// フォント情報の取得
+//		FontMetrics fontMetrics = paint.getFontMetrics();
+//
+//		// 文字列の5ポイント外側を囲む座標を求める
+//		float bLeft = left - 5;
+//		float bRight = left + textWidth + 5;
+//		float bTop = top + fontMetrics.ascent - 5;
+//		float bBottom = top + fontMetrics.descent + 5;
+//
+//		// 吹き出しの描画
+//		RectF rectF = new RectF(bLeft, bTop, bRight, bBottom);
+//		paint.setColor(Color.LTGRAY);
+//		canvas.drawRoundRect(rectF, 5, 5, paint);
+//
+//		// 三角形の描画
+//		paint.setStyle(Paint.Style.FILL_AND_STROKE);
+//		Path path = new Path();
+//		float center = left + textWidth / 2;
+//		float triangleSize = paint.getTextSize() / 3;
+//		path.moveTo(center, bBottom + triangleSize);
+//		path.lineTo(center - triangleSize / 2, bBottom - 1);
+//		path.lineTo(center + triangleSize / 2, bBottom - 1);
+//		path.lineTo(center, bBottom + triangleSize);
+//		canvas.drawPath(path, paint);
+//
+//		// 文字列の描画
+//		paint.setColor(Color.WHITE);
+//		canvas.drawText(text, left, top, paint);
+//		
+		 //ResourceからBitmapを生成
+	    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+	    int extension = (int) ((int) (VIEW_LIMIT - distance)/ (VIEW_LIMIT / 10));
+	    Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() * extension, bitmap.getHeight() * extension, false);
+	  //drawableの描画領域設定（必須）
+	    canvas.drawBitmap(bitmap, left, top,paint);
 	}
 
 	/**方角を示すためのコンパス描画開始 現在は三角形だが、きちんと作る　画像？パス？要選択

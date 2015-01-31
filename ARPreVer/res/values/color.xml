@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    	<!-- 駒配置後の色　mass:駒の移動範囲  piece:駒の位置 -->
+   	    <color name = "mass">#0000FF</color>
+   	    <color name = "piece">#FF0000</color>
+   	    <!-- マスの色 dark:暗色 light:明色の色 -->
+   	    <color name = "dark">#0d0015</color>
+   	    <color name = "light">#deb887</color>
+   	    <!-- 透明 -->
+ 	  	<color name="Transparency">#00FFFFFF</color>
+   	   
+</resources>

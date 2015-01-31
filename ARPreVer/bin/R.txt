@@ -325,7 +325,8 @@ int layout abc_search_dropdown_item_icons_2line 0x7f030015
 int layout abc_search_view 0x7f030016
 int layout abc_simple_decor 0x7f030017
 int layout activity_arpreview 0x7f030018
-int layout support_simple_spinner_dropdown_item 0x7f030019
+int layout icon_temp 0x7f030019
+int layout support_simple_spinner_dropdown_item 0x7f03001a
 int menu arpreview 0x7f0c0000
 int string Gps_Setting 0x7f0a0010
 int string Gps_Setting_Cancel 0x7f0a0012

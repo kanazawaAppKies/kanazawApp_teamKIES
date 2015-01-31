@@ -1,19 +1,15 @@
 package jp.kanazawaapp.kit;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import jp.kanazawaapp.kit.databaseDefine.GPSData;
-
-import android.R.color;
-import android.R.id;
-import android.R.string;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -24,6 +20,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,13 +28,14 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 
 public class ARPreviewActivity extends Activity implements SensorEventListener,LocationListener{
 
+	
+	
 	//ARview
 	private ArView arView;
 	//センサー
@@ -83,13 +81,12 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		// ARViewの取得
 		
 		arView = new ArView(this);
-		//データベースを使用するのでカーソルをコンテキストに渡す
-//		arView = new ArView(this,cursor);
 
+		//アイコン用のボタンを作成
+		//createButton();
 		
-		//閉じる
-		//cursor.close();
-
+		
+		
 		
 		//各種センサーの用意
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -106,7 +103,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
 		
-
+		
 	}
 	//activity実行直前
 		@Override
@@ -266,31 +263,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		TextView textView = (TextView)findViewById(R.id.textView1);
 		textView.setText("クリックされました");
 	}
-	
-	/**ボタンを作成する
-	 * @param top 
-	 * @param left 
-	 * @param info */
-	public static void createButton(String info, float left, int top){
-		for (int i = 0; i < ArView.gpsDataList.size(); i++) {
-			GPSData data =  ArView.gpsDataList.get(i);
-			DrawIcon Icon = new DrawIcon();
-			//Icon.button.setBackground(background);
-			Icon.button.setLeft((int) left);
-			Icon.button.setTop(top);
-			Icon.button.setText("");
-			
-		}
-	}
-	
-	//アイコンの初期化
-	public static void iconInit(){
-		
-	}
-	
 }
+	
+	
 
-class DrawIcon{
-	Button button = new Button(ARPreviewActivity.context);
-	LinearLayout linearLayout = new LinearLayout(ARPreviewActivity.context);
-}
+
