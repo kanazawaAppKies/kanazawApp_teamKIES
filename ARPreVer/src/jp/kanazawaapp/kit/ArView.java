@@ -117,7 +117,8 @@ public class ArView extends View {
 					float textWidth = paint.measureText(info);
 					float diff = (sub / (ANGLE / 2)) / 2;
 					float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
-					drawBalloonText(canvas, paint, info, left, 55);
+					//drawBalloonText(canvas, paint, info, left, 55);
+					ARPreviewActivity.createButton(info,left,55);
 
 			}
 		}

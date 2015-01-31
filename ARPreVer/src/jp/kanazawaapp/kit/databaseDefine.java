@@ -35,7 +35,6 @@ public class databaseDefine {
 				NAMELIST + "('海鮮どん屋',36.570923,136.648972,0,1100,2100,10001000)",
 				NAMELIST + "('廻る近江町市場寿し',36.571633,136.656835,0,930,2000,10000000)",
 				NAMELIST + "('金沢工業大学',36.530349,136.627751,0,930,2000,10000000)",
-				//NAMELIST + "('金沢工業大学',36.530349,136.627751,0,0,0,0"
 		};
 		Log.i("database", "完了");
 		//古いテーブルを破棄
@@ -51,7 +50,7 @@ public class databaseDefine {
 		readDatabase();
 	}
 	
-	public static void readDatabase(){
+	private static void readDatabase(){
 		Log.i("database", "読み込み開始");
 		Cursor cursor = dbObject.rawQuery(query, null);
 		GPSData data =  new GPSData();

@@ -5,6 +5,8 @@ import java.util.List;
 
 import jp.kanazawaapp.kit.databaseDefine.GPSData;
 
+import android.R.color;
+import android.R.id;
 import android.R.string;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -27,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
@@ -53,7 +58,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	
 	/**パッケージネーム*/
 	public static String packageName;
-	
+	/**コンテキスト*/
+	public static Context context;
 	
 //	//カーソル
 //	private Cursor cursor;
@@ -63,6 +69,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		super.onCreate(savedInstanceState);
 		//パッケージネームの取得
 		packageName = getPackageName();
+		//コンテキストの設定
+		context = this;
 		
 		// フルスクリーン指定
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -93,8 +101,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		//Viewの重ね合わせ
 		setContentView(new CameraView(this));
 		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-		//ボタン用のレイアアウト
-		createButton();
+		
 		View view = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
 		addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
@@ -260,11 +267,30 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		textView.setText("クリックされました");
 	}
 	
-	/**ボタンを作成する*/
-	public void createButton(){
+	/**ボタンを作成する
+	 * @param top 
+	 * @param left 
+	 * @param info */
+	public static void createButton(String info, float left, int top){
 		for (int i = 0; i < ArView.gpsDataList.size(); i++) {
 			GPSData data =  ArView.gpsDataList.get(i);
+			DrawIcon Icon = new DrawIcon();
+			//Icon.button.setBackground(background);
+			Icon.button.setLeft((int) left);
+			Icon.button.setTop(top);
+			Icon.button.setText("");
+			
 		}
 	}
 	
+	//アイコンの初期化
+	public static void iconInit(){
+		
+	}
+	
+}
+
+class DrawIcon{
+	Button button = new Button(ARPreviewActivity.context);
+	LinearLayout linearLayout = new LinearLayout(ARPreviewActivity.context);
 }
