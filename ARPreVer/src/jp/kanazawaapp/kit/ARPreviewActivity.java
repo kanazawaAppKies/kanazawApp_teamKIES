@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jp.kanazawaapp.kit.databaseDefine.GPSData;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -20,14 +18,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
@@ -259,9 +256,30 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	
 	
 	
-	public void ClickButton(View view){
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		int x = 0;
+		int y = 0;
+		//押されたとき
+		//if(event.getAction() == MotionEvent.ACTION_DOWN){
+			x = (int) event.getX();
+			y = (int)event.getY();
+		//}
+		for(int i = 0;i < ArView.coordinate.size(); i++){
+			CoordinateIcon coord = ArView.coordinate.get(i);
+			if((coord.left < x && x < coord.right) && (coord.top < y && y < coord.bottom)){
+				iconEvent(coord.info);
+			}
+		}
+		
+	    return super.onTouchEvent(event);
+
+	}
+	private void iconEvent(String info) {
 		TextView textView = (TextView)findViewById(R.id.textView1);
-		textView.setText("クリックされました");
+		textView.setTextSize(20);
+		textView.setText(info);
+		
 	}
 }
 	

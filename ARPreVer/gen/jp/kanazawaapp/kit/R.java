@@ -858,10 +858,21 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f060002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f070003;
+        /**  透明 
+         */
+        public static final int Transparency=0x7f070007;
+        public static final int abc_search_url_text_holo=0x7f070008;
         public static final int abc_search_url_text_normal=0x7f070000;
         public static final int abc_search_url_text_pressed=0x7f070002;
         public static final int abc_search_url_text_selected=0x7f070001;
+        /**  マスの色 dark:暗色 light:明色の色 
+         */
+        public static final int dark=0x7f070005;
+        public static final int light=0x7f070006;
+        /**  駒配置後の色　mass:駒の移動範囲  piece:駒の位置 
+         */
+        public static final int mass=0x7f070003;
+        public static final int piece=0x7f070004;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -1092,11 +1103,10 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050024;
-        public static final int action_settings=0x7f05003f;
+        public static final int action_settings=0x7f05003e;
         public static final int activity_chooser_view_content=0x7f050025;
         public static final int always=0x7f05000b;
         public static final int beginning=0x7f050011;
-        public static final int button1=0x7f05003e;
         public static final int checkbox=0x7f05002d;
         public static final int collapseActionView=0x7f05000d;
         public static final int default_activity_button=0x7f050028;
@@ -1196,8 +1206,7 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
         public static final int activity_arpreview=0x7f030018;
-        public static final int icon_temp=0x7f030019;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
+        public static final int support_simple_spinner_dropdown_item=0x7f030019;
     }
     public static final class menu {
         public static final int arpreview=0x7f0c0000;

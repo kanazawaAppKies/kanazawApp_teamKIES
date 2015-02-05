@@ -37,11 +37,13 @@ public class ArView extends View {
 
 	/** ARテキストの情報を保持するオブジェクト*/
 	public static ArrayList<databaseDefine.GPSData> gpsDataList = new ArrayList();
- 	
+ 	/**アイコンの座標を保持するオブジェクト*/
+	public static ArrayList<CoordinateIcon> coordinate = new ArrayList();
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	/**画角(度表記)*/
 	private final int ANGLE = 60;
-	/** ARテキスを表示する最大距離(メートル表記)*/
+	/** ARテキスを表示する最大距離(メートル表記)<br>
+	 * VIRE_LIMIT = 100000*/
 	private final float VIEW_LIMIT = 100000;
 	/** ディスプレイサイズ*/
 	private int displayX;
@@ -135,42 +137,18 @@ public class ArView extends View {
 	 * @param distance 
 	 */
 	private void drawBalloonText(Canvas canvas, Paint paint, String text,float left, int top, float distance) {
-//		// 文字列の幅を取得
-//		float textWidth = paint.measureText(text);
-//		// フォント情報の取得
-//		FontMetrics fontMetrics = paint.getFontMetrics();
-//
-//		// 文字列の5ポイント外側を囲む座標を求める
-//		float bLeft = left - 5;
-//		float bRight = left + textWidth + 5;
-//		float bTop = top + fontMetrics.ascent - 5;
-//		float bBottom = top + fontMetrics.descent + 5;
-//
-//		// 吹き出しの描画
-//		RectF rectF = new RectF(bLeft, bTop, bRight, bBottom);
-//		paint.setColor(Color.LTGRAY);
-//		canvas.drawRoundRect(rectF, 5, 5, paint);
-//
-//		// 三角形の描画
-//		paint.setStyle(Paint.Style.FILL_AND_STROKE);
-//		Path path = new Path();
-//		float center = left + textWidth / 2;
-//		float triangleSize = paint.getTextSize() / 3;
-//		path.moveTo(center, bBottom + triangleSize);
-//		path.lineTo(center - triangleSize / 2, bBottom - 1);
-//		path.lineTo(center + triangleSize / 2, bBottom - 1);
-//		path.lineTo(center, bBottom + triangleSize);
-//		canvas.drawPath(path, paint);
-//
-//		// 文字列の描画
-//		paint.setColor(Color.WHITE);
-//		canvas.drawText(text, left, top, paint);
-//		
-		 //ResourceからBitmapを生成
+		//ResourceからBitmapを生成
 	    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
-	    int extension = (int) ((int) (VIEW_LIMIT - distance)/ (VIEW_LIMIT / 10));
-	    Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() * extension, bitmap.getHeight() * extension, false);
-	  //drawableの描画領域設定（必須）
+	    int extension = (int) (((VIEW_LIMIT - 0)/VIEW_LIMIT) *3);
+	    bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() * extension, bitmap.getHeight() * extension, false);
+	    CoordinateIcon xy = new CoordinateIcon();
+	    xy.left = left;
+	    xy.right = bitmap.getWidth() + left;
+	    xy.top = top;
+	    xy.bottom = bitmap.getHeight() + top;
+	    xy.info = text;
+	    coordinate.add(xy);
+	    //drawableの描画領域設定（必須）
 	    canvas.drawBitmap(bitmap, left, top,paint);
 	}
 
@@ -208,35 +186,6 @@ public class ArView extends View {
 		invalidate();
 	}
 
-//	//データベースから読み込み
-//	public void readTable(Cursor cursor) {
-//		// データベースに保存されている
-//		// 全てのARテキストの情報をlistに読み込む
-//		if (gpsDataList != null)
-//			gpsDataList.clear();
-//		gpsDataList = new ArrayList();
-//
-//		cursor.moveToFirst();
-//		do {
-//			GPSData data = new GPSData();
-//			data.info = cursor.getString(0);
-//			data.latitude = cursor.getInt(1);
-//			data.longitude = cursor.getInt(2);
-//			data.genre = cursor.getInt(3);
-//			gpsDataList.add(data);
-//		} while (cursor.moveToNext());
-//		//なくなるまでリストに追加する
-//	}
-	
-//	//データの直接読み込み
-//	public void readTable(){
-//		GPSData data = new GPSData();
-//		data.info = "金沢工業大学";
-//		data.latitude = 36.530349;
-//		data.longitude = 136.627751;
-//		data.genre = 1;
-//		gpsDataList.add(data);
-//	}
 
 	/**
 	 * 目標地点までの距離を求める
@@ -259,40 +208,21 @@ public class ArView extends View {
 		
 	}
 
-	/**GPS情報を保持するクラス*/
-	public class GPSData {
-		/**
-		 * 施設名<br>
-		 * 漢字、英字可<br>
-		 * 文字数制限なし<br>
-		 */
-		public String info;
-		/**
-		 * 緯度<br>
-		 * 10進法で実数
-		 */
-		public double latitude; // 緯度
-		/**
-		 * 経度<br>
-		 * 10進法で実数
-		 */
-		public double longitude; // 経度
-		/**
-		 * ジャンルの種類<br>
-		 * 1 観光<br>
-		 * 2 飲食*/
-		public int genre;
-		/**
-		 * オープン時間
-		 */
-		public int open;
-		/**
-		 * 閉店時間
-		 */
-		public int close;
-		/**
-		 * 定休日
-		 * */
-		public int rest;
+	private void CoordinateInit(){
+		
 	}
+}
+
+/**施設のアイコン*/
+class CoordinateIcon{
+	/**アイコンの左側のＸ座標*/
+	float left;
+	/**アイコンの右側のＸ座標*/
+	float right;
+	/**アイコンの上側のＹ座標*/
+	float top;
+	/**アイコンの下側のＹ座標*/
+	float bottom;
+	/**施設名*/
+	String info;
 }
