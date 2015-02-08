@@ -26,6 +26,8 @@ public class ArView extends View {
 	/**コンパスの縦の位置*/
 	private final float POS_COMPASSY = 30;
 
+	/**アイコンの最大サイズ */
+	private final int ICON_MAX_SIZE = 150;
 
 	/**向きを保持する変数 (方角を指定する)*/
 	float direction;
@@ -39,6 +41,7 @@ public class ArView extends View {
 	public static ArrayList<databaseDefine.GPSData> gpsDataList = new ArrayList();
  	/**アイコンの座標を保持するオブジェクト*/
 	public static ArrayList<CoordinateIcon> coordinate = new ArrayList();
+	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	/**画角(度表記)*/
 	private final int ANGLE = 60;
@@ -79,12 +82,13 @@ public class ArView extends View {
 		paint.setAntiAlias(true);
 		
 		drawCompass(canvas, paint);
-		
+		coordinateInit();
 		//ARテキストの描画
 			for (int i = 0; i < gpsDataList.size(); i++) {
 				// データの読み込み
 				databaseDefine.GPSData data = gpsDataList.get(i);
 				String info = data.info;
+				int genre = data.genre;
 				double dlat = data.latitude;
 				double dlong = data.longitude;
 
@@ -119,7 +123,7 @@ public class ArView extends View {
 					float textWidth = paint.measureText(info);
 					float diff = (sub / (ANGLE / 2)) / 2;
 					float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
-					drawBalloonText(canvas, paint, info, left, 55,distance);
+					drawBalloonText(canvas, paint, info, left, 55,distance,genre);
 					//ARPreviewActivity.setIcon(info,left,55,i);
 
 			}
@@ -127,6 +131,12 @@ public class ArView extends View {
 		
 	}
 	
+	private void coordinateInit() {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+
 	/**
 	 * ARの噴出しの描写
 	 * @param canvas キャンバス
@@ -134,13 +144,18 @@ public class ArView extends View {
 	 * @param text 施設名
 	 * @param left 左側の位置
 	 * @param top 上側の位置　
-	 * @param distance 
+	 * @param distance 施設までの距離
+	 * @param genre ジャンル
 	 */
-	private void drawBalloonText(Canvas canvas, Paint paint, String text,float left, int top, float distance) {
+	private void drawBalloonText(Canvas canvas, Paint paint, String text,float left, int top, float distance, int genre) {
 		//ResourceからBitmapを生成
-	    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+		Bitmap bitmap = setIcon(genre);
+		bitmap = Bitmap.createScaledBitmap(bitmap, ICON_MAX_SIZE, ICON_MAX_SIZE, false);
+		
 	    int extension = (int) (((VIEW_LIMIT - 0)/VIEW_LIMIT) *3);
+	    
 	    bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() * extension, bitmap.getHeight() * extension, false);
+	    
 	    CoordinateIcon xy = new CoordinateIcon();
 	    xy.left = left;
 	    xy.right = bitmap.getWidth() + left;
@@ -151,6 +166,20 @@ public class ArView extends View {
 	    //drawableの描画領域設定（必須）
 	    canvas.drawBitmap(bitmap, left, top,paint);
 	}
+
+	/**
+	 * @param genre ジャンル
+	 * @return ジャンルに対応したアイコン
+	 */
+	private Bitmap setIcon(int genre) {
+		switch (genre) {
+		case 1:
+			
+		default:
+			return BitmapFactory.decodeResource(getResources(), R.drawable.seafood);
+		}
+	}
+
 
 	/**方角を示すためのコンパス描画開始 現在は三角形だが、きちんと作る　画像？パス？要選択
 	 * @param canvas キャンバス
@@ -208,8 +237,11 @@ public class ArView extends View {
 		
 	}
 
+	/**
+	 * 座標情報の初期化
+	 */
 	private void CoordinateInit(){
-		
+		coordinate = new ArrayList<CoordinateIcon>();
 	}
 }
 
