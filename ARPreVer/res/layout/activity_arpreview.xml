@@ -37,11 +37,11 @@
         android:layout_height="match_parent" >
 
         <TextView
-            android:id="@+id/imageStart"
+            android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/abc_ab_bottom_solid_dark_holo">
-
+            android:background="@drawable/abc_ab_bottom_solid_dark_holo"
+            android:text="TextView" />
     </FrameLayout>
 
 </FrameLayout>
