@@ -27,7 +27,7 @@ public class ArView extends View {
 	private final float POS_COMPASSY = 30;
 
 	/**アイコンの最大サイズ */
-	private final int ICON_MAX_SIZE = 150;
+	private final int ICON_MAX_SIZE = 100;
 
 	/**向きを保持する変数 (方角を指定する)*/
 	float direction;

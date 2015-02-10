@@ -261,10 +261,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		int x = 0;
 		int y = 0;
 		//押されたとき
-		//if(event.getAction() == MotionEvent.ACTION_DOWN){
-			x = (int) event.getX();
-			y = (int)event.getY();
-		//}
+		x = (int) event.getX();
+		y = (int)event.getY();
 		for(int i = 0;i < ArView.coordinate.size(); i++){
 			CoordinateIcon coord = ArView.coordinate.get(i);
 			if((coord.left < x && x < coord.right) && (coord.top < y && y < coord.bottom)){
@@ -274,6 +272,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		
 	    return super.onTouchEvent(event);
 
+	}
+	
+	public void onClickResetInfo(View view){
+		
 	}
 	private void iconEvent(String info) {
 		TextView textView = (TextView)findViewById(R.id.textView1);
