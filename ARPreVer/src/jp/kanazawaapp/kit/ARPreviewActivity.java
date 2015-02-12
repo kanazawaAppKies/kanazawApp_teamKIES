@@ -1,6 +1,5 @@
 package jp.kanazawaapp.kit;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +24,9 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
@@ -78,12 +80,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		// ARViewの取得
 		
 		arView = new ArView(this);
-
-		//アイコン用のボタンを作成
-		//createButton();
-		
-		
-		
 		
 		//各種センサーの用意
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -96,9 +92,11 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		setContentView(new CameraView(this));
 		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
-		View view = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
-		addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+		View infoView = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
+		addContentView(infoView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
+		View imageView = getLayoutInflater().inflate(R.layout.start_image, null);
+		addContentView(imageView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
 		
 	}
@@ -232,6 +230,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	}
 	@Override
 	public void onLocationChanged(Location location) {
+		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
+		if(startImage.getBackground() != null){
+			startImage.setBackground(null);
+		}
 		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
 
@@ -274,13 +276,25 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 
 	}
 	
-	public void onClickResetInfo(View view){
+	public void onClickCancel(View view){
+		layoutInit();
+	}
+	private void layoutInit() {
+		Button cansel = (Button)findViewById(R.id.button_cancel);
+		cansel.setVisibility(View.INVISIBLE);
+//		FrameLayout layout = (FrameLayout)findViewById(R.id.clickLayout);
+//		layout.setLayoutParams(new LayoutParams(ArView.displayX,LayoutParams.MATCH_PARENT));
+//		layout.setBackground(null);
 		
 	}
 	private void iconEvent(String info) {
-		TextView textView = (TextView)findViewById(R.id.textView1);
+		TextView textView = (TextView)findViewById(R.id.text_info);
 		textView.setTextSize(20);
 		textView.setText(info);
+		Button cancel = (Button)findViewById(R.id.button_cancel);
+		cancel.setVisibility(View.VISIBLE);
+//		FrameLayout layout = (FrameLayout)findViewById(R.id.clickLayout);
+//		layout.setBackgroundResource(R.color.white);
 		
 	}
 }

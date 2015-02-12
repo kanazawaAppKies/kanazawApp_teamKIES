@@ -49,7 +49,7 @@ public class ArView extends View {
 	 * VIRE_LIMIT = 100000*/
 	private final float VIEW_LIMIT = 100000;
 	/** ディスプレイサイズ*/
-	private int displayX;
+	public static int displayX;
 	Point size = new Point();
 	
 	/**地球の半径(キロメートル表記)*/

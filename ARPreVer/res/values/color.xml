@@ -8,5 +8,7 @@
    	    <color name = "light">#deb887</color>
    	    <!-- 透明 -->
  	  	<color name="Transparency">#00FFFFFF</color>
+ 	  	<color name="red">#FF0000</color>
+ 	  	<color name="white">#FFFFFF</color>
    	   
 </resources>
