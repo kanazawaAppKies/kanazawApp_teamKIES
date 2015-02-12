@@ -98,7 +98,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		View imageView = getLayoutInflater().inflate(R.layout.start_image, null);
 		addContentView(imageView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
-		
+		Button cansel = (Button)findViewById(R.id.button_cancel);
+		cansel.setVisibility(View.INVISIBLE);
 	}
 	//activity実行直前
 		@Override
@@ -233,6 +234,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
 		if(startImage.getBackground() != null){
 			startImage.setBackground(null);
+			TextView textView = (TextView)findViewById(R.id.text_load);
+			textView.setText(null);
 		}
 		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
@@ -277,24 +280,22 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	}
 	
 	public void onClickCancel(View view){
-		layoutInit();
-	}
-	private void layoutInit() {
 		Button cansel = (Button)findViewById(R.id.button_cancel);
 		cansel.setVisibility(View.INVISIBLE);
-//		FrameLayout layout = (FrameLayout)findViewById(R.id.clickLayout);
-//		layout.setLayoutParams(new LayoutParams(ArView.displayX,LayoutParams.MATCH_PARENT));
-//		layout.setBackground(null);
-		
+		LinearLayout layout = (LinearLayout)findViewById(R.id.clickLayout);
+		layout.setBackground(null);
+		TextView textView = (TextView)findViewById(R.id.text_info);
+		textView.setText(null);
 	}
+	
 	private void iconEvent(String info) {
 		TextView textView = (TextView)findViewById(R.id.text_info);
 		textView.setTextSize(20);
 		textView.setText(info);
 		Button cancel = (Button)findViewById(R.id.button_cancel);
 		cancel.setVisibility(View.VISIBLE);
-//		FrameLayout layout = (FrameLayout)findViewById(R.id.clickLayout);
-//		layout.setBackgroundResource(R.color.white);
+		LinearLayout layout = (LinearLayout)findViewById(R.id.clickLayout);
+		layout.setBackgroundResource(R.color.click);
 		
 	}
 }
