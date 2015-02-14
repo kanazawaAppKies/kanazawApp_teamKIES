@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="@string/loading"
-            android:textSize="50sp" />
+            android:textSize="45sp" />
 
     </FrameLayout>
 
