@@ -236,13 +236,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public void onLocationChanged(Location location) {
 		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
 		if(startImage.getBackground() != null){
-			//遅延処理
-			final Handler handler = new Handler();
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-				}
-			 }, 500);
+			sleep(3000);
 			
 			startImage.setBackground(null);
 			TextView textView = (TextView)findViewById(R.id.text_load);
@@ -268,6 +262,15 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public void onProviderDisabled(String provider) {
 		
 	}
+	
+	//指定ミリ秒実行を止めるメソッド
+	  public synchronized void sleep(long msec)
+	    {	
+	    	try
+	    	{
+	    		wait(msec);
+	    	}catch(InterruptedException e){}
+	    }
 	
 	
 	

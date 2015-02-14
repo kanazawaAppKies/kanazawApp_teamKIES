@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -75,7 +76,7 @@ public class ArView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		
+		int top = 35;
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
 		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
@@ -84,51 +85,50 @@ public class ArView extends View {
 		drawCompass(canvas, paint);
 		CoordinateInit();
 		//ARテキストの描画
-			for (int i = 0; i < gpsDataList.size(); i++) {
-				// データの読み込み
-				databaseDefine.GPSData data = gpsDataList.get(i);
-				String info = data.info;
-				int genre = data.genre;
-				double dlat = data.latitude;
-				double dlong = data.longitude;
+		for (int i = 0; i < gpsDataList.size(); i++) {
+			// データの読み込み
+			databaseDefine.GPSData data = gpsDataList.get(i);
+			String info = data.info;
+			int genre = data.genre;
+			double dlat = data.latitude;
+			double dlong = data.longitude;
 
-				float distance = calculationDistance(dlat,dlong);
+			float distance = calculationDistance(dlat,dlong);
 
-				// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
-				if (distance > VIEW_LIMIT) {
-					continue;
-				}
-				// ARテキストと現在地のなす角を求めて正規化する
-				double angle = Math.atan2(dlat*1000000 - nowLocationLat, dlong*1000000 - nowLocationLong);
-				//度に変換
-				float degree = (float) Math.toDegrees(angle);
-				degree = -degree + 90;
-				if (degree < 0)
-					degree = 360 + degree;
+			// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
+			if (distance > VIEW_LIMIT) {
+				continue;
+			}
+			// ARテキストと現在地のなす角を求めて正規化する
+			double angle = Math.atan2(dlat*1000000 - nowLocationLat, dlong*1000000 - nowLocationLong);
+			//度に変換
+			float degree = (float) Math.toDegrees(angle);
+			degree = -degree + 90;
+			if (degree < 0)
+				degree = 360 + degree;
 
-				// 端末の向きとARテキストとの角度の差を求める
-				float sub = degree - direction;
-				if (sub < -180.0)
-					sub += 360;
-				if (sub > 180.0)
-					sub -= 360;
+			// 端末の向きとARテキストとの角度の差を求める
+			float sub = degree - direction;
+			if (sub < -180.0)
+				sub += 360;
+			if (sub > 180.0)
+				sub -= 360;
 
-				// ARテキストが視野に存在すれば描画処理を行う
-				if (Math.abs(sub) < (ANGLE / 2)) {
-					// 距離によってARテキストのサイズを決める
-					float textSize = 50 * (float) (VIEW_LIMIT - distance)/ VIEW_LIMIT;
-					paint.setTextSize(textSize);
+			// ARテキストが視野に存在すれば描画処理を行う
+			if (Math.abs(sub) < (ANGLE / 2)) {
+				// 距離によってARテキストのサイズを決める
+				float textSize = 50 * (float) (VIEW_LIMIT - distance)/ VIEW_LIMIT;
+				paint.setTextSize(textSize);
 
-					// ARテキストの描画を描画する
-					float textWidth = paint.measureText(info);
-					float diff = (sub / (ANGLE / 2)) / 2;
-					float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
-					setDrawIcon(canvas, paint, info, left, 55,distance,genre);
-					//ARPreviewActivity.setIcon(info,left,55,i);
-
+				// ARテキストの描画を描画する
+				float textWidth = paint.measureText(info);
+				float diff = (sub / (ANGLE / 2)) / 2;
+				float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
+				setDrawIcon(info, left, 55,distance,genre);
+				top += 45;
 			}
 		}
-		
+		drawIcon(canvas, paint);
 	}
 
 	/**
@@ -141,12 +141,12 @@ public class ArView extends View {
 	 * @param distance 施設までの距離
 	 * @param genre ジャンル
 	 */
-	private void setDrawIcon(Canvas canvas, Paint paint, String text,float left, int top, float distance, int genre) {
+	private void setDrawIcon(String text,float left, int top, float distance, int genre) {
 		//ResourceからBitmapを生成
 		Bitmap bitmap = setIcon(genre);
 		bitmap = Bitmap.createScaledBitmap(bitmap, ICON_MAX_SIZE, ICON_MAX_SIZE, false);
 		
-	    int extension = (int) (((VIEW_LIMIT - 0)/VIEW_LIMIT) *3);
+	    int extension = (int) ((VIEW_LIMIT - distance)/VIEW_LIMIT)*3;
 	    
 	    bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() * extension, bitmap.getHeight() * extension, false);
 	    
@@ -156,9 +156,18 @@ public class ArView extends View {
 	    xy.top = top;
 	    xy.bottom = bitmap.getHeight() + top;
 	    xy.info = text;
+	    xy.icon = bitmap;
 	    coordinate.add(xy);
-	    //drawableの描画領域設定（必須）
-	    canvas.drawBitmap(bitmap, left, top,paint);
+	}
+	
+	private void drawIcon(Canvas canvas, Paint paint){
+		Log.i("アイコンドロー","アイコンを表示開始");
+		for(int i = 0;i < coordinate.size(); i++){
+			CoordinateIcon coord = coordinate.get(i);
+			canvas.drawBitmap(coord.icon, coord.left, coord.top,paint);
+			Log.i("アイコンドロー","アイコンを表示中："+i+"個目");
+		}
+		Log.i("アイコンドロー","アイコンを表示終了");
 	}
 
 	/**
@@ -251,4 +260,6 @@ class CoordinateIcon{
 	float bottom;
 	/**施設名*/
 	String info;
+	/**アイコン*/
+	Bitmap icon;
 }
