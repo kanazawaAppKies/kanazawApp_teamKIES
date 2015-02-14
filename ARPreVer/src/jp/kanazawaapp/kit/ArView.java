@@ -123,7 +123,7 @@ public class ArView extends View {
 					float textWidth = paint.measureText(info);
 					float diff = (sub / (ANGLE / 2)) / 2;
 					float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
-					drawBalloonText(canvas, paint, info, left, 55,distance,genre);
+					setDrawIcon(canvas, paint, info, left, 55,distance,genre);
 					//ARPreviewActivity.setIcon(info,left,55,i);
 
 			}
@@ -141,7 +141,7 @@ public class ArView extends View {
 	 * @param distance 施設までの距離
 	 * @param genre ジャンル
 	 */
-	private void drawBalloonText(Canvas canvas, Paint paint, String text,float left, int top, float distance, int genre) {
+	private void setDrawIcon(Canvas canvas, Paint paint, String text,float left, int top, float distance, int genre) {
 		//ResourceからBitmapを生成
 		Bitmap bitmap = setIcon(genre);
 		bitmap = Bitmap.createScaledBitmap(bitmap, ICON_MAX_SIZE, ICON_MAX_SIZE, false);

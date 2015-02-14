@@ -2,6 +2,7 @@ package jp.kanazawaapp.kit;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -234,6 +236,14 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public void onLocationChanged(Location location) {
 		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
 		if(startImage.getBackground() != null){
+			//遅延処理
+			final Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+				}
+			 }, 500);
+			
 			startImage.setBackground(null);
 			TextView textView = (TextView)findViewById(R.id.text_load);
 			textView.setText(null);
