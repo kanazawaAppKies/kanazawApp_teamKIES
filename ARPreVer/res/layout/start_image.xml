@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/backgroundImage"
-    android:background="@drawable/abc_ab_bottom_solid_dark_holo"
+    android:background="@drawable/start_image"
     android:orientation="vertical" >
 
     <FrameLayout
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="@string/loading"
-            android:textSize="45sp" />
+            android:textSize="30sp" />
 
     </FrameLayout>
 

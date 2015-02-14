@@ -1093,6 +1093,7 @@ containing a value of this type.
         public static final int food=0x7f020057;
         public static final int ic_comp=0x7f020058;
         public static final int seafood=0x7f020059;
+        public static final int start_image=0x7f02005a;
     }
     public static final class id {
         public static final int FrameLayout1=0x7f09003c;

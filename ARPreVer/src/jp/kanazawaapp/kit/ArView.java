@@ -82,7 +82,7 @@ public class ArView extends View {
 		paint.setAntiAlias(true);
 		
 		drawCompass(canvas, paint);
-		coordinateInit();
+		CoordinateInit();
 		//ARテキストの描画
 			for (int i = 0; i < gpsDataList.size(); i++) {
 				// データの読み込み
@@ -130,12 +130,6 @@ public class ArView extends View {
 		}
 		
 	}
-	
-	private void coordinateInit() {
-		// TODO 自動生成されたメソッド・スタブ
-		
-	}
-
 
 	/**
 	 * ARの噴出しの描写
