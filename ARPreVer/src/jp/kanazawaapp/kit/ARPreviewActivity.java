@@ -242,9 +242,11 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public void onLocationChanged(Location location) {
 		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
 		if(startImage.getBackground() != null){
+			Log.i("初期画面","描画処理透明化開始");
 			startImage.setBackground(null);
 			TextView textView = (TextView)findViewById(R.id.text_load);
 			textView.setText(null);
+			Log.i("初期画面","描画処理透明化完了");
 		}
 		
 		Log.i("GPS", "GPS情報読み込み");
