@@ -20,6 +20,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Layout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -236,19 +237,21 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public void onLocationChanged(Location location) {
 		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
 		if(startImage.getBackground() != null){
+			Log.i("遅延", "遅延開始");
 			sleep(3000);
-			
+			Log.i("遅延", "遅延完了");
 			startImage.setBackground(null);
 			TextView textView = (TextView)findViewById(R.id.text_load);
 			textView.setText(null);
 		}
+		Log.i("GPS", "GPS情報読み込み");
 		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
 
 		geomagneticField = new GeomagneticField((float) location.getLatitude(),
 					(float) location.getLongitude(), (float) location.getAltitude(),
 					new Date().getTime());
-
+		Log.i("GPS", "GPS情報読み込み完了");
 	}
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
