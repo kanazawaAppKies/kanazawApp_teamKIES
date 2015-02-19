@@ -25,7 +25,8 @@ public class databaseDefine {
     static String createTable = "CREATE TABLE namelist" + "(id INTEGER PRIMARY KEY, name STRING, latitude NUMERIC, longitude NUMERIC, genre INTEGER, open INTEGER, close INTEGER, rest INTEGER)";
 	
     /**クアリを設定 (後に営業中のものに変更する)*/
-    static String query = "SELECT * FROM namelist WHERE genre >= 0";
+    static String query = "SELECT * FROM namelist WHERE ((open > close) AND 0 <= "+ARPreviewActivity.nowTime+" AND close >= "+ ARPreviewActivity.nowTime +
+            ") OR (open <=" + ARPreviewActivity.nowTime + " AND close >= "+ARPreviewActivity.nowTime+") AND NOT(rest = rest | " + ARPreviewActivity.week +") GROUP BY name";
     
     
     /**データベースにデータを追加*/
@@ -35,6 +36,8 @@ public class databaseDefine {
 				NAMELIST + "('海鮮どん屋',36.570923,136.648972,0,1100,2100,10001000)",
 				NAMELIST + "('廻る近江町市場寿し',36.571633,136.656835,0,930,2000,10000000)",
 				NAMELIST + "('金沢工業大学',36.530349,136.627751,0,930,2000,10000000)",
+	NAMELIST + "('金沢工業大学2',36.530349,136.627751,0,930,2000,10000000)",
+	NAMELIST + "('金沢工業大学3',36.530349,136.627751,0,930,2000,10000000)",
 				NAMELIST + "('近江町海鮮丼家ひら井本店',36.570985,136.656721,0,1100,1530,11001001)",
 				NAMELIST + "('近江町海鮮丼家ひら井本店',36.570985,136.656721,0,1700,2130,11001001)",
 				NAMELIST + "('近江町海鮮丼家ひら井本店',36.570985,136.656721,0,1030,1530,10111110)",
@@ -104,9 +107,9 @@ public class databaseDefine {
 	    	String name = cursor.getString(idName);
 	    	double latitude = cursor.getDouble(idLatitude);
 	    	double longitude = cursor.getDouble(idLongitude);
+	    	int rest = cursor.getInt(idRest);
 	    	int open = cursor.getInt(idOpen);
 	    	int close = cursor.getInt(idClose);
-	    	int rest = cursor.getInt(idRest);
 	    	int genre = cursor.getInt(idGenre);
 	    	
 	    	//データの追加
@@ -117,11 +120,9 @@ public class databaseDefine {
 	    	data.open = open;
 	    	data.close = close;
 	    	data.rest = rest;
-	    	
-	    	ArView.gpsDataList.add(data);
-	    	Log.i("database", "読み込み完了");
-			
-		}
+    	}
+    	ArView.gpsDataList.add(data);
+    	Log.i("database", "読み込み完了");
 	}
 	
 	/**GPS情報を保持するクラス*/

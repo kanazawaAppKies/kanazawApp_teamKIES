@@ -10,16 +10,20 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.Display;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.google.android.maps.GeoPoint;
 
 
-public class ArView extends View {
+public class ArView extends View  {
 
 	//コンパスの描画位置を指定する
 	/**コンパスの横の位置*/
@@ -55,6 +59,9 @@ public class ArView extends View {
 	
 	/**地球の半径(キロメートル表記)*/
 	public static final double EARTH = 6378.137;
+	
+	/**配列の要素を格納*/
+	static int i = 0;
 
  	
     //データベース用のコンテキスト
@@ -81,7 +88,7 @@ public class ArView extends View {
 		//アンチエイリアス処理を有効化
 		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
 		paint.setAntiAlias(true);
-		
+		ArView.i = 0;
 		drawCompass(canvas, paint);
 		CoordinateInit();
 		//ARテキストの描画
@@ -124,15 +131,16 @@ public class ArView extends View {
 				float textWidth = paint.measureText(info);
 				float diff = (sub / (ANGLE / 2)) / 2;
 				float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
-				setDrawIcon(info, left, 55,distance,genre);
-				top += 45;
+				drawIcon(canvas, paint, info, left, top,distance,genre);
+				if(size.y > top)
+					top += 45;
+				
 			}
 		}
-		drawIcon(canvas, paint);
 	}
 
 	/**
-	 * ARの噴出しの描写
+	 * ARのアイコンの描写
 	 * @param canvas キャンバス
 	 * @param paint ペイント
 	 * @param text 施設名
@@ -141,34 +149,34 @@ public class ArView extends View {
 	 * @param distance 施設までの距離
 	 * @param genre ジャンル
 	 */
-	private void setDrawIcon(String text,float left, int top, float distance, int genre) {
+	private void drawIcon(Canvas canvas,Paint paint,String text,float left, int top, float distance, int genre) {
+		paint.setFilterBitmap(true);
 		//ResourceからBitmapを生成
 		Bitmap bitmap = setIcon(genre);
 		bitmap = Bitmap.createScaledBitmap(bitmap, ICON_MAX_SIZE, ICON_MAX_SIZE, false);
 		
-	    int extension = (int) ((VIEW_LIMIT - distance)/VIEW_LIMIT)*3;
-	    
-	    bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() * extension, bitmap.getHeight() * extension, false);
-	    
+	    //int extension = (int) ((VIEW_LIMIT - distance)/VIEW_LIMIT)*3;
+	    int extension = 1;
+	    bitmap = Bitmap.createScaledBitmap(bitmap, ICON_MAX_SIZE, ICON_MAX_SIZE, false);
+	    canvas.drawBitmap(bitmap,left,top,paint);
+
 	    CoordinateIcon xy = new CoordinateIcon();
 	    xy.left = left;
 	    xy.right = bitmap.getWidth() + left;
 	    xy.top = top;
 	    xy.bottom = bitmap.getHeight() + top;
 	    xy.info = text;
-	    xy.icon = bitmap;
+	    
+	    //bitmapの描画
+	    //XXX ここの処理が複数回行ってるはずなのに複数描画で気なし
+	    canvas.drawBitmap(bitmap, left, top, paint);
+	    //ビットマップのリサイクル
+	    bitmap.recycle();
+	    //座標情報の追加
 	    coordinate.add(xy);
 	}
 	
-	private void drawIcon(Canvas canvas, Paint paint){
-		Log.i("アイコンドロー","アイコンを表示開始");
-		for(int i = 0;i < coordinate.size(); i++){
-			CoordinateIcon coord = coordinate.get(i);
-			canvas.drawBitmap(coord.icon, coord.left, coord.top,paint);
-			Log.i("アイコンドロー","アイコンを表示中："+i+"個目");
-		}
-		Log.i("アイコンドロー","アイコンを表示終了");
-	}
+
 
 	/**
 	 * @param genre ジャンル
@@ -246,6 +254,17 @@ public class ArView extends View {
 	private void CoordinateInit(){
 		coordinate = new ArrayList<CoordinateIcon>();
 	}
+	
+	public synchronized  void sleep(long msec)
+    {	
+    	try
+    	{
+    		wait(msec);
+    	}catch(InterruptedException e){}
+    }
+
+
+	
 }
 
 /**施設のアイコン*/
@@ -260,6 +279,4 @@ class CoordinateIcon{
 	float bottom;
 	/**施設名*/
 	String info;
-	/**アイコン*/
-	Bitmap icon;
 }

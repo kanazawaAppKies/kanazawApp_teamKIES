@@ -1,5 +1,6 @@
 package jp.kanazawaapp.kit;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -61,6 +62,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public static String packageName;
 	/**コンテキスト*/
 	public static Context context;
+	/**現在の時刻*/
+	public static String nowTime;
+	/**曜日*/
+	public static int week;
 	
 //	//カーソル
 //	private Cursor cursor;
@@ -72,7 +77,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		packageName = getPackageName();
 		//コンテキストの設定
 		context = this;
-		
+		//時刻と曜日の取得
+		Calendar calendar = Calendar.getInstance();
+		nowTime =""+ calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE);
+		week = setWeekDay(calendar.get(Calendar.DAY_OF_WEEK));
 		// フルスクリーン指定
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -110,7 +118,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		Log.i("init", "viewの初期化処理完了");
 		Log.i("view", "view完了");
 	}
-	//activity実行直前
+	
+		//activity実行直前
 		@Override
 		protected void onResume() {
 			super.onResume();
@@ -240,11 +249,13 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	}
 	@Override
 	public void onLocationChanged(Location location) {
+		
 		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
 		if(startImage.getBackground() != null){
 			Log.i("初期画面","描画処理透明化開始");
 			startImage.setBackground(null);
 			TextView textView = (TextView)findViewById(R.id.text_load);
+			sleep(3000);
 			textView.setText(null);
 			Log.i("初期画面","描画処理透明化完了");
 		}
@@ -272,14 +283,34 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	}
 	
 	//指定ミリ秒実行を止めるメソッド
-	  public synchronized void sleep(long msec)
-	    {	
-	    	try
-	    	{
-	    		wait(msec);
-	    	}catch(InterruptedException e){}
-	    }
+	public synchronized  void sleep(long msec)
+    {	
+    	try
+    	{
+    		wait(msec);
+    	}catch(InterruptedException e){}
+    }
 	
+  	private int setWeekDay(int dayOfWeek) {
+		switch (dayOfWeek) {
+		case Calendar.SUNDAY:
+			return 11000000;
+		case Calendar.MONDAY:
+			return 10100000;
+		case Calendar.TUESDAY:
+			return 10010000;
+		case Calendar.WEDNESDAY:
+			return 11001000;
+		case Calendar.THURSDAY:
+			return 11000100;
+		case Calendar.FRIDAY:
+			return 11000010;
+		case Calendar.SATURDAY:
+			return 11000001;
+		default:
+			return 10000000;
+		}
+	}
 	
 	
 	
@@ -297,7 +328,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			}
 		}
 		
-	    return super.onTouchEvent(event);
+		return super.onTouchEvent(event);
 
 	}
 	
@@ -321,7 +352,3 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		
 	}
 }
-	
-	
-
-
