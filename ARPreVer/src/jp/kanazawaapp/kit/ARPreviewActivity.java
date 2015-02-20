@@ -52,7 +52,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	
 //location関係
 	private LocationManager locationManager;
-	//グーグルマップからの位置取得
+	/**グーグルマップからの位置取得*/
 	private GeoPoint geoPoint;
 	//磁北補正用
 	private GeomagneticField geomagneticField;  
@@ -66,6 +66,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public static String nowTime;
 	/**曜日*/
 	public static int week;
+	/**イベントフラグ*/
+	private static boolean eventFlag = false;
 	
 //	//カーソル
 //	private Cursor cursor;
@@ -79,8 +81,9 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		context = this;
 		//時刻と曜日の取得
 		Calendar calendar = Calendar.getInstance();
-		nowTime =""+ calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE);
+		//nowTime =""+ calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE);
 		week = setWeekDay(calendar.get(Calendar.DAY_OF_WEEK));
+		nowTime = "2000";
 		// フルスクリーン指定
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -189,18 +192,18 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		getMenuInflater().inflate(R.menu.arpreview, menu);
 		return true;
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+//XXX メニュー処理
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		// Handle action bar item clicks here. The action bar will
+//		// automatically handle clicks on the Home/Up button, so long
+//		// as you specify a parent activity in AndroidManifest.xml.
+//		int id = item.getItemId();
+//		if (id == R.id.action_settings) {
+//			return true;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
 
 	//センサーの情報が変更された
 	@Override
@@ -323,13 +326,13 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		y = (int)event.getY();
 		for(int i = 0;i < ArView.coordinate.size(); i++){
 			CoordinateIcon coord = ArView.coordinate.get(i);
-			if((coord.left < x && x < coord.right) && (coord.top < y && y < coord.bottom)){
+			if((coord.left < x && x < coord.right) && (coord.top < y && y < coord.bottom)&& ARPreviewActivity.eventFlag == false){
+				ARPreviewActivity.eventFlag = true;
 				iconEvent(coord.info);
 			}
 		}
-		
+		Log.i("座標のサイズ","サイズ"+ArView.coordinate.size());
 		return super.onTouchEvent(event);
-
 	}
 	
 	public void onClickCancel(View view){
@@ -339,6 +342,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		layout.setBackground(null);
 		TextView textView = (TextView)findViewById(R.id.text_info);
 		textView.setText(null);
+		ARPreviewActivity.eventFlag = false;
 	}
 	
 	private void iconEvent(String info) {

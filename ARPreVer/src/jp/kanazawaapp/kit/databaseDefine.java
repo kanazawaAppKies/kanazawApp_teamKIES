@@ -84,15 +84,16 @@ public class databaseDefine {
 		for(int i = 0;i < insert.length; i++){
 			dbObject.execSQL(insert[i]);
 		}
-		Log.i("database", "挿入完了");
+		Log.i("database", "挿入完了"+insert.length);
 		readDatabase();
 	}
 	
 	private static void readDatabase(){
 		Log.i("database", "読み込み開始");
 		Cursor cursor = dbObject.rawQuery(query, null);
-		GPSData data =  new GPSData();
+		
 		while (cursor.moveToNext()) {
+			GPSData data =  new GPSData();
 			//各カラムのidを取得
 			int idId = cursor.getColumnIndex("id");
 			int idName = cursor.getColumnIndex("name");
@@ -120,9 +121,12 @@ public class databaseDefine {
 	    	data.open = open;
 	    	data.close = close;
 	    	data.rest = rest;
+	    	Log.i("データ","name:"+data.info);
+	    	ArView.listAdd(data);
     	}
-    	ArView.gpsDataList.add(data);
+    	
     	Log.i("database", "読み込み完了");
+    	Log.i("database","データベースサイズ:"+ArView.gpsDataList.size());
 	}
 	
 	/**GPS情報を保持するクラス*/

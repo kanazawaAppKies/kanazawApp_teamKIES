@@ -2,6 +2,8 @@ package jp.kanazawaapp.kit;
 
 import java.util.ArrayList;
 
+import jp.kanazawaapp.kit.databaseDefine.GPSData;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,7 +34,7 @@ public class ArView extends View  {
 	private final float POS_COMPASSY = 30;
 
 	/**アイコンの最大サイズ */
-	private final int ICON_MAX_SIZE = 100;
+	private final int ICON_MAX_SIZE = 200;
 
 	/**向きを保持する変数 (方角を指定する)*/
 	float direction;
@@ -46,6 +48,9 @@ public class ArView extends View  {
 	public static ArrayList<databaseDefine.GPSData> gpsDataList = new ArrayList();
  	/**アイコンの座標を保持するオブジェクト*/
 	public static ArrayList<CoordinateIcon> coordinate = new ArrayList();
+	
+	/**アイコンが描画される上端*/
+	private static final int top = 35;
 	
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	/**画角(度表記)*/
@@ -83,23 +88,24 @@ public class ArView extends View  {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		int top = 35;
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
 		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
-		paint.setAntiAlias(true);
-		ArView.i = 0;
-		drawCompass(canvas, paint);
 		CoordinateInit();
+		
+		paint.setAntiAlias(true);
+		drawCompass(canvas, paint);
+		
 		//ARテキストの描画
-		for (int i = 0; i < gpsDataList.size(); i++) {
+		for (int i = 0; i < gpsDataList.size();i++) {
+			Log.i("リスト","リストi::"+i);
 			// データの読み込み
 			databaseDefine.GPSData data = gpsDataList.get(i);
 			String info = data.info;
 			int genre = data.genre;
 			double dlat = data.latitude;
 			double dlong = data.longitude;
-
+			
 			float distance = calculationDistance(dlat,dlong);
 
 			// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
@@ -124,18 +130,15 @@ public class ArView extends View  {
 			// ARテキストが視野に存在すれば描画処理を行う
 			if (Math.abs(sub) < (ANGLE / 2)) {
 				// 距離によってARテキストのサイズを決める
-				float textSize = 50 * (float) (VIEW_LIMIT - distance)/ VIEW_LIMIT;
-				paint.setTextSize(textSize);
-
-				// ARテキストの描画を描画する
-				float textWidth = paint.measureText(info);
-				float diff = (sub / (ANGLE / 2)) / 2;
-				float left = (displayX / 2 + displayX * diff) - (textWidth / 2);
-				drawIcon(canvas, paint, info, left, top,distance,genre);
-				if(size.y > top)
-					top += 45;
+				Log.i("onDraw","データ読み込み結果:"+info);
 				
+				Log.i("onDraw","サイズ:"+gpsDataList.size());
+				// ARテキストの描画を描画する
+				float diff = (sub / (ANGLE / 2)) / 2;
+				float left = (displayX / 2) + (displayX * diff);
+				drawIcon(canvas, paint, info, left,distance,genre);
 			}
+			
 		}
 	}
 
@@ -145,37 +148,77 @@ public class ArView extends View  {
 	 * @param paint ペイント
 	 * @param text 施設名
 	 * @param left 左側の位置
-	 * @param top 上側の位置　
 	 * @param distance 施設までの距離
 	 * @param genre ジャンル
 	 */
-	private void drawIcon(Canvas canvas,Paint paint,String text,float left, int top, float distance, int genre) {
+	private void drawIcon(Canvas canvas,Paint paint,String text,float left,float distance, int genre) {
+		Log.i("アイコン","アイコンドロー開始:"+text);
 		paint.setFilterBitmap(true);
 		//ResourceからBitmapを生成
 		Bitmap bitmap = setIcon(genre);
 		bitmap = Bitmap.createScaledBitmap(bitmap, ICON_MAX_SIZE, ICON_MAX_SIZE, false);
 		
-	    //int extension = (int) ((VIEW_LIMIT - distance)/VIEW_LIMIT)*3;
-	    int extension = 1;
-	    bitmap = Bitmap.createScaledBitmap(bitmap, ICON_MAX_SIZE, ICON_MAX_SIZE, false);
-	    canvas.drawBitmap(bitmap,left,top,paint);
+//	    int extension = (int) ((VIEW_LIMIT - distance)/VI
+		int width;
+		int hight;
+	    width = hight = extension(distance);
+	    Bitmap drawBitmap = Bitmap.createScaledBitmap(bitmap, width, hight, false);
 
 	    CoordinateIcon xy = new CoordinateIcon();
 	    xy.left = left;
 	    xy.right = bitmap.getWidth() + left;
-	    xy.top = top;
-	    xy.bottom = bitmap.getHeight() + top;
 	    xy.info = text;
+	    //左右がかぶってるかどうか確認
+	    xy.top = coordinateCheck(xy);
+	    xy.bottom = bitmap.getHeight() + xy.top;
 	    
+
 	    //bitmapの描画
-	    //XXX ここの処理が複数回行ってるはずなのに複数描画で気なし
-	    canvas.drawBitmap(bitmap, left, top, paint);
+	    canvas.drawBitmap(drawBitmap, xy.left, xy.top, paint);
 	    //ビットマップのリサイクル
 	    bitmap.recycle();
+	    drawBitmap.recycle();
 	    //座標情報の追加
 	    coordinate.add(xy);
+	    Log.i("top","top:"+ArView.top);
+	    Log.i("アイコン","アイコンドロー完了"+text);
 	}
 	
+	private int extension(float distance) {
+		if(0 <= distance && distance <= 100)
+			return ICON_MAX_SIZE;
+		else if(distance <= 300){
+			return (int) (ICON_MAX_SIZE*0.9);
+		}
+		return (int)(ICON_MAX_SIZE * 0.5);
+	}
+
+
+	/** 左右がかぶっているアイコンの高さの合計を調べる
+	 * @param xy 座標情報のリスト
+	 * @return アイコンの左右がかぶっている高さの合計とアイコンの上端
+	 */
+	private float coordinateCheck(CoordinateIcon xy) {
+		float height = 0;
+		Log.i("sum","sum"+height);
+		Log.i("check","サイズ"+coordinate.size());
+		for(int i = 0;i < coordinate.size();i++){
+			Log.i("check","i:"+i);
+			Log.i("check","sum"+height);
+			CoordinateIcon coord = coordinate.get(i);
+			float left = coord.left;
+			float right = coord.right;
+			if((xy.left >= left && xy.left <= right)
+					||(xy.right >= left && xy.right <= right)){
+				if(height < coord.bottom)
+					height = height + (coord.bottom - coord.top);
+				
+				Log.i("height","height"+(coord.bottom - coord.top));
+			}
+		}
+		return height + ArView.top;
+		
+	}
 
 
 	/**
@@ -252,7 +295,9 @@ public class ArView extends View  {
 	 * 座標情報の初期化
 	 */
 	private void CoordinateInit(){
+		Log.i("init","init開始");
 		coordinate = new ArrayList<CoordinateIcon>();
+		Log.i("init","init終了");
 	}
 	
 	public synchronized  void sleep(long msec)
@@ -262,6 +307,13 @@ public class ArView extends View  {
     		wait(msec);
     	}catch(InterruptedException e){}
     }
+
+
+	public static void listAdd(GPSData data) {
+		gpsDataList.add(data);
+		Log.i("データベースサイズ","サイズ"+gpsDataList.size());
+		
+	}
 
 
 	
