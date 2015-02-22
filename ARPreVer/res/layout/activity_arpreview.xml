@@ -9,24 +9,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="jp.kanazawaapp.kit.ARPreviewActivity" >
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/clickLayout"
-        android:orientation="vertical" >
+        android:id="@+id/clickLayout" >
+
         <Button
             android:id="@+id/button_cancel"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@color/red"
-            android:onClick="onClickCancel" 
             android:layout_gravity="right|top"
+            android:background="@color/red"
+            android:onClick="onClickCancel"
             android:text="×" />
 
         <TextView
             android:id="@+id/text_info"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/goto_google_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:onClick="onClickGotoMap"
+            android:text="マップを表示" />
+
+    </FrameLayout>
 
 </FrameLayout>

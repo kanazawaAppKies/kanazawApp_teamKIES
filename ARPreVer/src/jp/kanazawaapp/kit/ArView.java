@@ -14,6 +14,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -39,9 +40,9 @@ public class ArView extends View  {
 	/**向きを保持する変数 (方角を指定する)*/
 	float direction;
 
-	/**現在地の緯度*/
+	/**int<br>現在地の緯度*/
 	int nowLocationLat;
-	/**現在位置の経度*/
+	/**int<br>現在位置の経度*/
 	int nowLocationLong;
 
 	/** ARテキストの情報を保持するオブジェクト*/
@@ -64,9 +65,7 @@ public class ArView extends View  {
 	
 	/**地球の半径(キロメートル表記)*/
 	public static final double EARTH = 6378.137;
-	
-	/**配列の要素を格納*/
-	static int i = 0;
+
 
  	
     //データベース用のコンテキスト
@@ -105,9 +104,10 @@ public class ArView extends View  {
 			int genre = data.genre;
 			double dlat = data.latitude;
 			double dlong = data.longitude;
-			
 			float distance = calculationDistance(dlat,dlong);
 
+			Log.i("distance",info+"\n"+distance);
+			Log.i("distance","nowLocationLat:"+nowLocationLat/1000000);
 			// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
 			if (distance > VIEW_LIMIT) {
 				continue;
@@ -136,7 +136,7 @@ public class ArView extends View  {
 				// ARテキストの描画を描画する
 				float diff = (sub / (ANGLE / 2)) / 2;
 				float left = (displayX / 2) + (displayX * diff);
-				drawIcon(canvas, paint, info, left,distance,genre);
+				drawIcon(canvas, paint, info, left,distance,genre,i);
 			}
 			
 		}
@@ -150,8 +150,9 @@ public class ArView extends View  {
 	 * @param left 左側の位置
 	 * @param distance 施設までの距離
 	 * @param genre ジャンル
+	 * @param arrayNumber 
 	 */
-	private void drawIcon(Canvas canvas,Paint paint,String text,float left,float distance, int genre) {
+	private void drawIcon(Canvas canvas,Paint paint,String text,float left,float distance, int genre, int arrayNumber) {
 		Log.i("アイコン","アイコンドロー開始:"+text);
 		paint.setFilterBitmap(true);
 		//ResourceからBitmapを生成
@@ -171,6 +172,7 @@ public class ArView extends View  {
 	    //左右がかぶってるかどうか確認
 	    xy.top = coordinateCheck(xy);
 	    xy.bottom = bitmap.getHeight() + xy.top;
+	    xy.arrayNumber = arrayNumber;
 	    
 
 	    //bitmapの描画
@@ -183,8 +185,9 @@ public class ArView extends View  {
 	    Log.i("top","top:"+ArView.top);
 	    Log.i("アイコン","アイコンドロー完了"+text);
 	}
-	
+	/**距離におおじて大きさを変える*/
 	private int extension(float distance) {
+		//TODO 大きさを静的に指定しといて
 		if(0 <= distance && distance <= 100)
 			return ICON_MAX_SIZE;
 		else if(distance <= 300){
@@ -226,6 +229,7 @@ public class ArView extends View  {
 	 * @return ジャンルに対応したアイコン
 	 */
 	private Bitmap setIcon(int genre) {
+		//TODO ジャンルに対応するアイコンに変えておいて
 		switch (genre) {
 		case 1:
 			
@@ -287,7 +291,9 @@ public class ArView extends View  {
 		float distance = (float) Math.sqrt(Math.pow(EARTH * radlat,2) +
 				Math.pow(Math.cos(Math.toRadians(nowLocationLat)) * EARTH * radlon, 2));
 				
-		return distance;
+		return distance*1000;
+		
+		
 		
 	}
 
@@ -331,4 +337,6 @@ class CoordinateIcon{
 	float bottom;
 	/**施設名*/
 	String info;
+	/**要素の番号*/
+	int arrayNumber;
 }

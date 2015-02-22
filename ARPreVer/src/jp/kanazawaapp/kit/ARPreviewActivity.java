@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
+import jp.kanazawaapp.kit.databaseDefine.GPSData;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Layout;
@@ -54,6 +57,10 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	private LocationManager locationManager;
 	/**グーグルマップからの位置取得*/
 	private GeoPoint geoPoint;
+	/**現在地の緯度*/
+	private double sauceLatitude;
+	/**現在位置の経度*/
+	private double sauceLongitude;
 	//磁北補正用
 	private GeomagneticField geomagneticField;  
 	
@@ -68,6 +75,9 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	public static int week;
 	/**イベントフラグ*/
 	private static boolean eventFlag = false;
+	
+	/**gps情報が入っている配列の要素番号*/
+	private static int arrayNumber;
 	
 //	//カーソル
 //	private Cursor cursor;
@@ -118,6 +128,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		
 		Button cansel = (Button)findViewById(R.id.button_cancel);
 		cansel.setVisibility(View.INVISIBLE);
+		Button map = (Button)findViewById(R.id.goto_google_map);
+		map.setVisibility(View.INVISIBLE);
 		Log.i("init", "viewの初期化処理完了");
 		Log.i("view", "view完了");
 	}
@@ -183,7 +195,9 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			locationManager.removeUpdates(this);
 			//センサーを終了
 			sensorManager.unregisterListener(this);
-
+//			//フラグをfalseにする
+//			ARPreviewActivity.eventFlag = false;
+			viewInit();
 		}
 
 	@Override
@@ -260,12 +274,13 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			TextView textView = (TextView)findViewById(R.id.text_load);
 			sleep(3000);
 			textView.setText(null);
-			Log.i("初期画面","描画処理透明化完了");
 		}
 		
 		Log.i("GPS", "GPS情報読み込み");
 		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
+		sauceLatitude = location.getLatitude();
+		sauceLongitude = location.getLongitude();
 
 		geomagneticField = new GeomagneticField((float) location.getLatitude(),
 					(float) location.getLongitude(), (float) location.getAltitude(),
@@ -328,7 +343,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			CoordinateIcon coord = ArView.coordinate.get(i);
 			if((coord.left < x && x < coord.right) && (coord.top < y && y < coord.bottom)&& ARPreviewActivity.eventFlag == false){
 				ARPreviewActivity.eventFlag = true;
-				iconEvent(coord.info);
+				iconEvent(coord.info,coord.arrayNumber);
 			}
 		}
 		Log.i("座標のサイズ","サイズ"+ArView.coordinate.size());
@@ -336,23 +351,49 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	}
 	
 	public void onClickCancel(View view){
-		Button cansel = (Button)findViewById(R.id.button_cancel);
-		cansel.setVisibility(View.INVISIBLE);
-		LinearLayout layout = (LinearLayout)findViewById(R.id.clickLayout);
-		layout.setBackground(null);
-		TextView textView = (TextView)findViewById(R.id.text_info);
-		textView.setText(null);
-		ARPreviewActivity.eventFlag = false;
+		viewInit();
 	}
 	
-	private void iconEvent(String info) {
+	public void onClickGotoMap(View view) {
+		//XXX　グーグルマップへ移動
+		databaseDefine.GPSData geoData = ArView.gpsDataList.get(arrayNumber);
+//		double destinationLatitude = geoData.latitude;
+//		double destinationLongitude = geoData.longitude;
+//		Log.i("geo","lat:"+destinationLatitude+"\nlon:"+destinationLongitude);
+//		Log.i("geo","http://maps.google.com/maps?saddr="+sauceLatitude+","+sauceLongitude+"" +
+//        		"&daddr="+destinationLatitude+","+destinationLongitude+"&dirflg=w");
+		Log.i("geo", geoData.info);
+		Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+		intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+		String requestURL = "http://maps.google.com/maps?saddr="+sauceLatitude+","+sauceLongitude+"" +
+        		"&daddr="+geoData.info+"&dirflg=w";
+		intent.setData(Uri.parse(requestURL));
+        startActivity(intent);
+	}
+	private void iconEvent(String info,int number) {
 		TextView textView = (TextView)findViewById(R.id.text_info);
 		textView.setTextSize(20);
 		textView.setText(info);
 		Button cancel = (Button)findViewById(R.id.button_cancel);
 		cancel.setVisibility(View.VISIBLE);
-		LinearLayout layout = (LinearLayout)findViewById(R.id.clickLayout);
+		Button map = (Button)findViewById(R.id.goto_google_map);
+		map.setVisibility(View.VISIBLE);
+		FrameLayout layout = (FrameLayout)findViewById(R.id.clickLayout);
 		layout.setBackgroundResource(R.color.click);
+		ARPreviewActivity.arrayNumber = number;
 		
+	}
+	
+	private void viewInit(){
+		Button cansel = (Button)findViewById(R.id.button_cancel);
+		cansel.setVisibility(View.INVISIBLE);
+		Button map = (Button)findViewById(R.id.goto_google_map);
+		map.setVisibility(View.INVISIBLE);
+		FrameLayout layout = (FrameLayout)findViewById(R.id.clickLayout);
+		layout.setBackground(null);
+		TextView textView = (TextView)findViewById(R.id.text_info);
+		textView.setText(null);
+		ARPreviewActivity.eventFlag = false;
 	}
 }

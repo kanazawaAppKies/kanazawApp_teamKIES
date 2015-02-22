@@ -259,7 +259,7 @@ int id action_menu_presenter 0x7f090003
 int id action_mode_close_button 0x7f090024
 int id activity_chooser_view_content 0x7f090025
 int id always 0x7f09000f
-int id backgroundImage 0x7f090040
+int id backgroundImage 0x7f090041
 int id beginning 0x7f090016
 int id button_cancel 0x7f09003e
 int id checkbox 0x7f09002d
@@ -273,6 +273,7 @@ int id edit_query 0x7f090030
 int id end 0x7f090017
 int id expand_activities_button 0x7f090026
 int id expanded_menu 0x7f09002c
+int id goto_google_map 0x7f090040
 int id home 0x7f090000
 int id homeAsUp 0x7f09000a
 int id icon 0x7f09002a
@@ -305,7 +306,7 @@ int id split_action_bar 0x7f09001e
 int id submit_area 0x7f090039
 int id tabMode 0x7f090008
 int id text_info 0x7f09003f
-int id text_load 0x7f090041
+int id text_load 0x7f090042
 int id title 0x7f09002b
 int id top_action_bar 0x7f090020
 int id up 0x7f090021

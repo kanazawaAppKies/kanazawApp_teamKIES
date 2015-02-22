@@ -132,35 +132,42 @@ public class databaseDefine {
 	/**GPS情報を保持するクラス*/
 	static class GPSData {
 		/**
+		 * String<br>
 		 * 施設名<br>
 		 * 漢字、英字可<br>
 		 * 文字数制限なし<br>
 		 */
 		public String info;
 		/**
+		 * double<br>
 		 * 緯度<br>
 		 * 10進法で実数
 		 */
 		public double latitude; 
 		/**
+		 * double<br>
 		 * 経度<br>
 		 * 10進法で実数
 		 */
 		public double longitude;
 		/**
+		 * int<br>
 		 * ジャンルの種類<br>
 		 * 1 観光<br>
 		 * 2 飲食*/
 		public int genre;
 		/**
+		 * int<br>
 		 * オープン時間
 		 */
 		public int open;
 		/**
+		 * int<br>
 		 * 閉店時間
 		 */
 		public int close;
 		/**
+		 * int<br>
 		 * 定休日
 		 * */
 		public int rest;
