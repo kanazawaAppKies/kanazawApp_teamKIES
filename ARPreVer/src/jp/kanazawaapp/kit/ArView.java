@@ -56,15 +56,16 @@ public class ArView extends View  {
 	// カメラの画角を指定する 後にAPIで画角を取得し動的指定
 	/**画角(度表記)*/
 	private final int ANGLE = 60;
+
 	/** ARテキスを表示する最大距離(メートル表記)<br>
-	 * VIRE_LIMIT = 100000*/
-	private final float VIEW_LIMIT = 100000;
+	 * VIRE_LIMIT = 10000です*/
+	private final float VIEW_LIMIT = 10000;
 	/** ディスプレイサイズ*/
 	public static int displayX;
 	Point size = new Point();
 	
 	/**地球の半径(キロメートル表記)*/
-	public static final double EARTH = 6378.137;
+	private static final double EARTH = 6378.137;
 
 
  	
@@ -136,7 +137,7 @@ public class ArView extends View  {
 				// ARテキストの描画を描画する
 				float diff = (sub / (ANGLE / 2)) / 2;
 				float left = (displayX / 2) + (displayX * diff);
-				drawIcon(canvas, paint, info, left,distance,genre,i);
+				drawIcon(canvas, paint,left,distance,genre,i);
 			}
 			
 		}
@@ -152,8 +153,7 @@ public class ArView extends View  {
 	 * @param genre ジャンル
 	 * @param arrayNumber 
 	 */
-	private void drawIcon(Canvas canvas,Paint paint,String text,float left,float distance, int genre, int arrayNumber) {
-		Log.i("アイコン","アイコンドロー開始:"+text);
+	private void drawIcon(Canvas canvas,Paint paint,float left,float distance, int genre, int arrayNumber) {
 		paint.setFilterBitmap(true);
 		//ResourceからBitmapを生成
 		Bitmap bitmap = setIcon(genre);
@@ -168,7 +168,6 @@ public class ArView extends View  {
 	    CoordinateIcon xy = new CoordinateIcon();
 	    xy.left = left;
 	    xy.right = bitmap.getWidth() + left;
-	    xy.info = text;
 	    //左右がかぶってるかどうか確認
 	    xy.top = coordinateCheck(xy);
 	    xy.bottom = bitmap.getHeight() + xy.top;
@@ -183,7 +182,6 @@ public class ArView extends View  {
 	    //座標情報の追加
 	    coordinate.add(xy);
 	    Log.i("top","top:"+ArView.top);
-	    Log.i("アイコン","アイコンドロー完了"+text);
 	}
 	/**距離におおじて大きさを変える*/
 	private int extension(float distance) {
@@ -282,8 +280,8 @@ public class ArView extends View  {
 	 * @see <a href="http://www.kiteretsu-so.com/archives/1183">距離を求める</a>*/
 	private float calculationDistance(double lat, double lon){
 		// ARテキストとの距離を求め、ラジアンに変換する
-		double dlat = lat - (double)(nowLocationLat / 1000000);
-		double dlon = lon - (double)(nowLocationLong / 1000000);
+		double dlat = lat - (double)(nowLocationLat / 1E6);
+		double dlon = lon - (double)(nowLocationLong / 1E6);
 		
 		double radlat = Math.toRadians(dlat);
 		double radlon = Math.toRadians(dlon);
@@ -292,9 +290,6 @@ public class ArView extends View  {
 				Math.pow(Math.cos(Math.toRadians(nowLocationLat)) * EARTH * radlon, 2));
 				
 		return distance*1000;
-		
-		
-		
 	}
 
 	/**
@@ -306,13 +301,7 @@ public class ArView extends View  {
 		Log.i("init","init終了");
 	}
 	
-	public synchronized  void sleep(long msec)
-    {	
-    	try
-    	{
-    		wait(msec);
-    	}catch(InterruptedException e){}
-    }
+
 
 
 	public static void listAdd(GPSData data) {
@@ -335,8 +324,6 @@ class CoordinateIcon{
 	float top;
 	/**アイコンの下側のＹ座標*/
 	float bottom;
-	/**施設名*/
-	String info;
 	/**要素の番号*/
 	int arrayNumber;
 }

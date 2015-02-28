@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- ボタンを押した状態 -->
+    <item 
+        android:state_pressed="true"
+        android:drawable="@drawable/mapbutton_push"></item>
+    <!-- ボタンを押してない状態 -->
+    <item 
+        android:state_pressed="false"
+        android:drawable="@drawable/mapbutton"></item>
+
+</selector>

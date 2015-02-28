@@ -206,7 +206,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		getMenuInflater().inflate(R.menu.arpreview, menu);
 		return true;
 	}
-//XXX メニュー処理
+//メニュー処理
 //	@Override
 //	public boolean onOptionsItemSelected(MenuItem item) {
 //		// Handle action bar item clicks here. The action bar will
@@ -330,8 +330,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		}
 	}
 	
-	
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		int x = 0;
@@ -343,7 +341,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			CoordinateIcon coord = ArView.coordinate.get(i);
 			if((coord.left < x && x < coord.right) && (coord.top < y && y < coord.bottom)&& ARPreviewActivity.eventFlag == false){
 				ARPreviewActivity.eventFlag = true;
-				iconEvent(coord.info,coord.arrayNumber);
+				iconEvent(coord.arrayNumber);
 			}
 		}
 		Log.i("座標のサイズ","サイズ"+ArView.coordinate.size());
@@ -355,13 +353,7 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	}
 	
 	public void onClickGotoMap(View view) {
-		//XXX　グーグルマップへ移動
 		databaseDefine.GPSData geoData = ArView.gpsDataList.get(arrayNumber);
-//		double destinationLatitude = geoData.latitude;
-//		double destinationLongitude = geoData.longitude;
-//		Log.i("geo","lat:"+destinationLatitude+"\nlon:"+destinationLongitude);
-//		Log.i("geo","http://maps.google.com/maps?saddr="+sauceLatitude+","+sauceLongitude+"" +
-//        		"&daddr="+destinationLatitude+","+destinationLongitude+"&dirflg=w");
 		Log.i("geo", geoData.info);
 		Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
@@ -371,17 +363,19 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		intent.setData(Uri.parse(requestURL));
         startActivity(intent);
 	}
-	private void iconEvent(String info,int number) {
+	private void iconEvent(int number) {
+		ARPreviewActivity.arrayNumber = number;
+		
 		TextView textView = (TextView)findViewById(R.id.text_info);
 		textView.setTextSize(20);
-		textView.setText(info);
+		textView.setText(ArView.gpsDataList.get(arrayNumber).info);
 		Button cancel = (Button)findViewById(R.id.button_cancel);
 		cancel.setVisibility(View.VISIBLE);
 		Button map = (Button)findViewById(R.id.goto_google_map);
 		map.setVisibility(View.VISIBLE);
 		FrameLayout layout = (FrameLayout)findViewById(R.id.clickLayout);
 		layout.setBackgroundResource(R.color.click);
-		ARPreviewActivity.arrayNumber = number;
+		
 		
 	}
 	

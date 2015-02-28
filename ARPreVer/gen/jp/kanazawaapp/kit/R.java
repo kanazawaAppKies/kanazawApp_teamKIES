@@ -1092,8 +1092,11 @@ containing a value of this type.
         public static final int abc_textfield_searchview_right_holo_light=0x7f020056;
         public static final int food=0x7f020057;
         public static final int ic_comp=0x7f020058;
-        public static final int seafood=0x7f020059;
-        public static final int start_image=0x7f02005a;
+        public static final int mapbutton=0x7f020059;
+        public static final int mapbutton_push=0x7f02005a;
+        public static final int mapbutton_style=0x7f02005b;
+        public static final int seafood=0x7f02005c;
+        public static final int start_image=0x7f02005d;
     }
     public static final class id {
         public static final int FrameLayout1=0x7f09003c;

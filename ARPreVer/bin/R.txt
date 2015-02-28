@@ -243,8 +243,11 @@ int drawable abc_textfield_searchview_right_holo_dark 0x7f020055
 int drawable abc_textfield_searchview_right_holo_light 0x7f020056
 int drawable food 0x7f020057
 int drawable ic_comp 0x7f020058
-int drawable seafood 0x7f020059
-int drawable start_image 0x7f02005a
+int drawable mapbutton 0x7f020059
+int drawable mapbutton_push 0x7f02005a
+int drawable mapbutton_style 0x7f02005b
+int drawable seafood 0x7f02005c
+int drawable start_image 0x7f02005d
 int id FrameLayout1 0x7f09003c
 int id action_bar 0x7f09001c
 int id action_bar_activity_content 0x7f090001
