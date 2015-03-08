@@ -90,7 +90,7 @@ public class ArView extends View  {
 	protected void onDraw(Canvas canvas) {
 		Paint paint = new Paint();
 		//アンチエイリアス処理を有効化
-		//アンチエイリアス処理　= 曲線や斜めのギザギザを少なくすること
+		//アンチエイリアス処理 = 曲線や斜めのギザギザを少なくすること
 		CoordinateInit();
 		
 		paint.setAntiAlias(true);
@@ -98,7 +98,6 @@ public class ArView extends View  {
 		
 		//ARテキストの描画
 		for (int i = 0; i < gpsDataList.size();i++) {
-			Log.i("リスト","リストi::"+i);
 			// データの読み込み
 			databaseDefine.GPSData data = gpsDataList.get(i);
 			String info = data.info;
@@ -107,8 +106,7 @@ public class ArView extends View  {
 			double dlong = data.longitude;
 			float distance = calculationDistance(dlat,dlong);
 
-			Log.i("distance",info+"\n"+distance);
-			Log.i("distance","nowLocationLat:"+nowLocationLat/1000000);
+
 			// ARテキストとの距離が一定以上離れていたら、処理を行わずに次のARテキストの処理を行う
 			if (distance > VIEW_LIMIT) {
 				continue;
@@ -131,9 +129,7 @@ public class ArView extends View  {
 			// ARテキストが視野に存在すれば描画処理を行う
 			if (Math.abs(sub) < (ANGLE / 2)) {
 				// 距離によってARテキストのサイズを決める
-				Log.i("onDraw","データ読み込み結果:"+info);
-				
-				Log.i("onDraw","サイズ:"+gpsDataList.size());
+
 				// ARテキストの描画を描画する
 				float diff = (sub / (ANGLE / 2)) / 2;
 				float left = (displayX / 2) + (displayX * diff);
@@ -181,7 +177,6 @@ public class ArView extends View  {
 	    drawBitmap.recycle();
 	    //座標情報の追加
 	    coordinate.add(xy);
-	    Log.i("top","top:"+ArView.top);
 	}
 	/**距離におおじて大きさを変える*/
 	private int extension(float distance) {
@@ -201,11 +196,7 @@ public class ArView extends View  {
 	 */
 	private float coordinateCheck(CoordinateIcon xy) {
 		float height = 0;
-		Log.i("sum","sum"+height);
-		Log.i("check","サイズ"+coordinate.size());
 		for(int i = 0;i < coordinate.size();i++){
-			Log.i("check","i:"+i);
-			Log.i("check","sum"+height);
 			CoordinateIcon coord = coordinate.get(i);
 			float left = coord.left;
 			float right = coord.right;
@@ -214,7 +205,6 @@ public class ArView extends View  {
 				if(height < coord.bottom)
 					height = height + (coord.bottom - coord.top);
 				
-				Log.i("height","height"+(coord.bottom - coord.top));
 			}
 		}
 		return height + ArView.top;
@@ -230,8 +220,11 @@ public class ArView extends View  {
 		//TODO ジャンルに対応するアイコンに変えておいて
 		switch (genre) {
 		case 1:
+			//ジャンル番号:1は食べ物のアイコン
+			return.BitmapFactory.decodeResource(getResources(), R.drawable.food);
 			
 		default:
+			//初期設定（ジャンル番号:0）は海鮮のアイコン
 			return BitmapFactory.decodeResource(getResources(), R.drawable.seafood);
 		}
 	}
@@ -296,9 +289,7 @@ public class ArView extends View  {
 	 * 座標情報の初期化
 	 */
 	private void CoordinateInit(){
-		Log.i("init","init開始");
 		coordinate = new ArrayList<CoordinateIcon>();
-		Log.i("init","init終了");
 	}
 	
 
@@ -306,7 +297,6 @@ public class ArView extends View  {
 
 	public static void listAdd(GPSData data) {
 		gpsDataList.add(data);
-		Log.i("データベースサイズ","サイズ"+gpsDataList.size());
 		
 	}
 

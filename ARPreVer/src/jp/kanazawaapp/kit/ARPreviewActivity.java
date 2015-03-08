@@ -114,24 +114,17 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		listAcc = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
 		
 		//Viewの重ね合わせ
-		Log.i("view", "viewの重ね合わせ開始");
 		setContentView(new CameraView(this));
-		Log.i("view", "カメラview完了");
 		addContentView(arView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-		Log.i("view", "ARview完了");
 		View infoView = getLayoutInflater().inflate(R.layout.activity_arpreview, null);
 		addContentView(infoView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-		Log.i("view", "タッチ用view完了");
 		View imageView = getLayoutInflater().inflate(R.layout.start_image, null);
 		addContentView(imageView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-		Log.i("view", "スタート画面完了");
 		
 		Button cansel = (Button)findViewById(R.id.button_cancel);
 		cansel.setVisibility(View.INVISIBLE);
 		Button map = (Button)findViewById(R.id.goto_google_map);
 		map.setVisibility(View.INVISIBLE);
-		Log.i("init", "viewの初期化処理完了");
-		Log.i("view", "view完了");
 	}
 	
 		//activity実行直前
@@ -269,14 +262,12 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		
 		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
 		if(startImage.getBackground() != null){
-			Log.i("初期画面","描画処理透明化開始");
 			startImage.setBackground(null);
 			TextView textView = (TextView)findViewById(R.id.text_load);
 			sleep(3000);
 			textView.setText(null);
 		}
 		
-		Log.i("GPS", "GPS情報読み込み");
 		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
 		sauceLatitude = location.getLatitude();
@@ -285,7 +276,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 		geomagneticField = new GeomagneticField((float) location.getLatitude(),
 					(float) location.getLongitude(), (float) location.getAltitude(),
 					new Date().getTime());
-		Log.i("GPS", "GPS情報読み込み完了");
 	}
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -344,7 +334,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 				iconEvent(coord.arrayNumber);
 			}
 		}
-		Log.i("座標のサイズ","サイズ"+ArView.coordinate.size());
 		return super.onTouchEvent(event);
 	}
 	
@@ -354,7 +343,6 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	
 	public void onClickGotoMap(View view) {
 		databaseDefine.GPSData geoData = ArView.gpsDataList.get(arrayNumber);
-		Log.i("geo", geoData.info);
 		Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
 		intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
