@@ -221,7 +221,7 @@ public class ArView extends View  {
 		switch (genre) {
 		case 1:
 			//ジャンル番号:1は食べ物のアイコン
-			return.BitmapFactory.decodeResource(getResources(), R.drawable.food);
+			return BitmapFactory.decodeResource(getResources(), R.drawable.food);
 			
 		default:
 			//初期設定（ジャンル番号:0）は海鮮のアイコン
