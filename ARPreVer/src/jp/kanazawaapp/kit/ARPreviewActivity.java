@@ -133,13 +133,13 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			super.onResume();
 			
 			
-			 //ロケーションマネージャの設定
-			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			if(locationManager != null){
-				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, this);
-			}
-			
-			checkGpsService();
+//			 //ロケーションマネージャの設定
+//			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//			if(locationManager != null){
+//				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, this);
+//			}
+//			
+//			checkGpsService();
 			//センサー処理の登録
 			/* sensorManager
 			 * 第1引数		センサーによって呼び出される関数を持つクラス
@@ -247,6 +247,8 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 			
 			//ArViewに値を渡す
 			//描画をする
+			//TODO デモ　LATに緯度を整数で入力　LONに経度を整数で入力
+			geoPoint = new GeoPoint(LAT, LON);
 			arView.drawScreen(direction,geoPoint);
 		}
 		
@@ -257,26 +259,26 @@ public class ARPreviewActivity extends Activity implements SensorEventListener,L
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 	}
-	@Override
-	public void onLocationChanged(Location location) {
-		
-		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
-		if(startImage.getBackground() != null){
-			startImage.setBackground(null);
-			TextView textView = (TextView)findViewById(R.id.text_load);
-			sleep(3000);
-			textView.setText(null);
-		}
-		
-		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
-				(int) (location.getLongitude() * 1E6));
-		sauceLatitude = location.getLatitude();
-		sauceLongitude = location.getLongitude();
-
-		geomagneticField = new GeomagneticField((float) location.getLatitude(),
-					(float) location.getLongitude(), (float) location.getAltitude(),
-					new Date().getTime());
-	}
+//	@Override
+//	public void onLocationChanged(Location location) {
+//		
+//		LinearLayout startImage = (LinearLayout)findViewById(R.id.backgroundImage);
+//		if(startImage.getBackground() != null){
+//			startImage.setBackground(null);
+//			TextView textView = (TextView)findViewById(R.id.text_load);
+//			sleep(3000);
+//			textView.setText(null);
+//		}
+//		
+//		geoPoint = new GeoPoint((int) (location.getLatitude() * 1E6),
+//				(int) (location.getLongitude() * 1E6));
+//		sauceLatitude = location.getLatitude();
+//		sauceLongitude = location.getLongitude();
+//
+//		geomagneticField = new GeomagneticField((float) location.getLatitude(),
+//					(float) location.getLongitude(), (float) location.getAltitude(),
+//					new Date().getTime());
+//	}
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		
